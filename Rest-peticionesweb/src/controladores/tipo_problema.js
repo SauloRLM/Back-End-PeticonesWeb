@@ -1,0 +1,158 @@
+'use strict'
+const dbconnection = require('./conectionBD');
+const connection = dbconnection();
+connection.connect(function(error){
+  if(error){
+   console.log("No es posible establecer conexión con el servidor de base de datos. Verifique la conexión.")
+ }
+});
+//acciones
+function guardarTipoProblema(req,res){
+  //Recoger parametros peticion
+  var params = req.body;
+
+  if(params.tipo_problema && params.descripcion_tipo_problema && params.estatus && connection){
+
+    //verificar que no exista ese tipo de problema
+    var query_verificar = connection.query('SELECT tipo_problema FROM tipo_problema WHERE tipo_problema =?',[params.tipo_problema], function(error, result){
+
+      if(error){
+          //throw error;
+          res.status(200).send({Mensaje:'Error al verificar existencia'});
+       }else{
+
+        var resultado_verificacion = result;
+        //verificar
+        if(resultado_verificacion.length == 0){
+
+            var query = connection.query('INSERT INTO tipo_problema(tipo_problema, descripcion_tipo_problema, estatus) VALUES(?,?,?)',
+                            [params.tipo_problema, params.descripcion_tipo_problema, params.estatus],function(error, result){
+                                if(error){
+                                // throw error;
+                                    res.status(200).send({Mensaje:'Error Al registrar al Tipo de Problema'});
+                                }else{
+                                    res.status(200).send({Mensaje:'Tipo de Problema registrado con exito'});
+                                }
+            });             
+        }else{
+          res.status(200).send({Mensaje:'Tipo de problema ya registrado en el sistema'});
+        }
+       }
+    });
+  }else{
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el tipo de problema'});
+  }
+}
+
+/**/
+function modificarTipoProblema(req,res){
+  var id_tipo_problema = req.params.id_tipo_problema;  
+  var params = req.body;
+
+  if(params.tipo_problema && params.descripcion_tipo_problema && params.estatus && connection){
+
+    var query_verificar = connection.query('SELECT id_tipo_problema FROM tipo_problema WHERE id_tipo_problema =?',[id_tipo_problema], function(error, result){
+      if(error){
+          //throw error;
+          res.status(200).send({Mensaje:'Error al verificar existencia'});
+       }else{
+        var resultado_verificacion = result;
+        //Modificar Sucursal//
+        if(resultado_verificacion.length != 0){
+          
+            var query = connection.query('UPDATE tipo_problema SET tipo_problema =?, descripcion_tipo_problema =?, estatus= ?  WHERE id_tipo_problema = ?',
+            [params.tipo_problema, params.descripcion_tipo_problema, params.estatus, id_tipo_problema],function(error, result){
+                if(error){
+                    //throw error;
+                    res.status(200).send({Mensaje:'Error al modificar el tipo de problema'});
+                }else{
+                    res.status(200).send({Mensaje:'Tipo de Problema modificado con exito'});
+                }
+            });                                                                           
+        }
+        else{
+          res.status(200).send({Mensaje:'El Tipo Problema no existe'});
+        }
+       }
+    });
+  }else{
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Tipo Problema'});
+  }
+}
+
+
+function getTiposProblemas(req,res){
+  var query = connection.query('SELECT * FROM tipo_problema', [], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición'});
+    }else{
+
+      var tipos_problemas = result;
+            
+      if(tipos_problemas.length != 0){
+        res.status(200).json(tipos_problemas);   
+      }
+      else{
+        res.status(200).send({Mensaje:'No hay Tipo de Problema'});
+      }
+    }
+  });
+}
+
+
+function getTipoProblema(req,res){
+  var id_tipo_problema = req.params.id_tipo_problema;
+
+  var query = connection.query('SELECT * FROM tipo_problema WHERE id_tipo_problema =?', [id_tipo_problema], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición'});
+    }else{
+
+      var tipo_problema = result;
+            
+      if(tipo_problema.length != 0){
+        //res.json(rows);
+        res.status(200).json(tipo_problema);   
+      }
+      else{
+        res.status(200).send({Mensaje:'El tipo de problema no existe'});
+      }
+    }
+  });
+}
+
+
+function eliminarTipoProblema(req,res){
+
+  var id_tipo_problema = req.params.id_usuario;
+  var estatus = 'B';
+  var query = connection.query('UPDATE tipo_problema SET estatus = ? WHERE id_tipo_problema = ?',
+  [estatus, id_tipo_problema],function(error, result){
+
+    if(error){
+      //throw error;
+      res.status(200).send({Mensaje:'Error en la petición'});
+    }else{
+
+      var resultado_verificacion = result.affectedRows;
+            
+      if(resultado_verificacion != 0){
+        res.status(200).send({Mensaje:'Tipo de problema deshabilitado con exito'});  
+      }
+      else{
+        res.status(200).send({Mensaje:'El Tipo de problema no existe'});
+      }
+    }
+  });
+}
+
+
+module.exports={  
+    guardarTipoProblema,
+    modificarTipoProblema,
+    getTiposProblemas,
+    getTipoProblema,
+    eliminarTipoProblema,    
+};

@@ -1,0 +1,209 @@
+'use strict'
+/*
+var mysql = require('mysql');
+
+var connection = mysql.createConnection({
+   host: 'localhost',
+   user: 'root',
+   password: 'Saulo@123',
+   database: 'peticionesweb',   
+});
+
+connection.connect(function(error){
+   if(error){
+    console.log("No es posible establecer conexión con el servidor de base de datos. Verifique la conexión.")
+  }
+});
+*/
+const dbconnection = require('./conectionBD');
+const connection = dbconnection();
+connection.connect(function(error){
+  if(error){
+   console.log("No es posible establecer conexión con el servidor de base de datos. Verifique la conexión.")
+ }
+});
+
+//acciones
+function guardarAlmacen(req,res){
+  //Recoger parametros peticion
+  var params = req.body;
+
+  if(params.id_sucursal && params.id_codigo_articulo  && params.cantidad_total && params.cantidad_disponible && params.tipo && connection){
+
+    //Verrificar si existe ese registro en el almacen 
+    var query_verificar = connection.query('SELECT id_codigo_articulo FROM almacen WHERE id_codigo_articulo = ? AND id_sucursal = ?',[params.id_codigo_articulo, params.id_sucursal], function(error, result){
+    
+        if(error){
+          //throw error;
+          res.status(200).send({Mensaje:'Error al verificar existencia'});
+       }else{
+        
+        var resultado_verificacion = result;
+        //Verificar //
+        if(resultado_verificacion.length == 0){
+
+          //Verificar si existe la sucursal ingresada 
+          var query_verificar_sucursal = connection.query('SELECT id_sucursal FROM sucursal WHERE id_sucursal =?',[params.id_sucursal], function(error, result){
+            if(error){
+              //throw error;
+              res.status(200).send({Mensaje:'Error al verificar existencia'});
+            }else{
+              
+              var resultado_verificacion_sucursal = result;
+
+              if(resultado_verificacion_sucursal.length != 0){
+
+                //verificar el codigo del producto
+                var query_verificar_codigo = connection.query('SELECT id_codigo_articulo FROM codigo_articulo WHERE id_codigo_articulo = ?',[params.id_codigo_articulo], function(error, result){
+                    
+                    if(error){
+                        //throw error;
+                        res.status(200).send({Mensaje:'Error al verificar existencia'});
+                      
+                    }else{
+                        
+                        var resultado_verificacion_codigo = result;
+
+                        if(resultado_verificacion_codigo.length != 0){
+                            //se procede a insetar la tupla
+                            var query = connection.query('INSERT INTO almacen(id_sucursal, id_codigo_articulo, cantidad_total, cantidad_disponible, tipo) VALUES(?,?,?,?,?)',
+                            [params.id_sucursal, params.id_codigo_articulo, params.cantidad_total, params.cantidad_disponible, params.tipo],function(error, result){
+                                if(error){
+                                // throw error;
+                                    res.status(200).send({Mensaje:'Error al registrar la Articulo'});
+                                }else{
+                                    res.status(200).send({Mensaje:'Articulo registrado con exito'});
+                                }
+                            });
+
+                        }else{
+                            res.status(200).send({Mensaje:'EL Codigo Articulo no existe o no esta registrado'});
+                        }
+                    }          
+                });                             
+              }else{
+                  res.status(200).send({Mensaje:'La Sucursal no existe o no esta registrada'});
+              }
+            }
+          });          
+        }
+        else{
+          res.status(200).send({Mensaje:'Producto ya registrado en esta sucursal anteriormente'});
+        }
+       }
+    });
+  }else{
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Pruducto'});
+  }
+}
+
+/**/
+function modificarAlmacen(req,res){
+  var id_articulo = req.params.id_articulo;
+  var params = req.body;
+
+  if(params.cantidad_total && params.cantidad_disponible && params.tipo && connection){
+
+    var query_verificar = connection.query('SELECT id_articulo FROM almacen WHERE id_articulo =?',[id_articulo], function(error, result){
+      if(error){
+          //throw error;
+          res.status(200).send({Mensaje:'Error al verificar existencia'});
+       }else{
+        var resultado_verificacion = result;
+        //Modificar Sucursal//
+        if(resultado_verificacion.length != 0){
+
+            var query = connection.query('UPDATE almacen SET cantidad_total =?, cantidad_disponible = ?, tipo = ? WHERE id_articulo = ?',
+            [params.cantidad_total, params.cantidad_disponible, params.tipo, id_articulo],function(error, result){
+                if(error){
+                //throw error;
+                res.status(200).send({Mensaje:'Error al modificar Almacen'});
+                }else{
+                res.status(200).send({Mensaje:'Almacen modificado con exito'});
+                }
+            });            
+        }
+        else{
+          res.status(200).send({Mensaje:'producto no registrado o no existe'});
+        }
+       }
+    });
+  }else{
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el almacen'});
+  }
+}
+
+
+//hacer inner join con sucursal y con producto 
+function getAlmacenes(req,res){
+  var query = connection.query('SELECT almacen.id_articulo, almacen.id_sucursal ,sucursal.nombre_sucursal, almacen.id_codigo_articulo, codigo_articulo.nombre_articulo, cantidad_total, cantidad_disponible, tipo FROM almacen INNER JOIN sucursal on sucursal.id_sucursal = almacen.id_sucursal INNER JOIN codigo_articulo on codigo_articulo.id_codigo_articulo = almacen.id_codigo_articulo', [], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición'});
+    }else{
+
+      var almacenes = result;
+            
+      if(almacenes.length != 0){
+        res.status(200).json(almacenes);   
+      }
+      else{
+        res.status(200).send({Mensaje:'No hay productos en el almacen'});
+      }
+    }
+  });
+}
+
+
+function getAlmacen(req,res){
+  var id_almacen = req.params.id_almacen;
+
+  var query = connection.query('SELECT almacen.id_articulo, almacen.id_sucursal ,sucursal.nombre_sucursal, almacen.id_codigo_articulo, codigo_articulo.nombre_articulo, cantidad_total, cantidad_disponible, tipo FROM almacen INNER JOIN sucursal on sucursal.id_sucursal = almacen.id_sucursal INNER JOIN codigo_articulo on codigo_articulo.id_codigo_articulo = almacen.id_codigo_articulo Where usuario_problema.id_usuario_problema =?', [id_almacen], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición'});
+    }else{
+      var almacen = result;            
+      if(almacen.length != 0){
+        //res.json(rows);
+        res.status(200).json(almacen);   
+      }else{
+        res.status(200).send({Mensaje:'El Producto no existe en el almacen'});
+      }
+    }
+  });
+}
+
+/*
+function eliminarAlmacen(req,res){
+
+  var id_empleado = req.params.id_empleado;
+  var estatus = 'B';
+  var query = connection.query('UPDATE empleado SET estatus = ? WHERE id_empleado = ?',
+  [estatus, id_empleado],function(error, result){
+
+    if(error){
+      //throw error;
+      res.status(200).send({Mensaje:'Error en la petición'});
+    }else{
+
+      var resultado_verificacion = result.affectedRows;
+            
+      if(resultado_verificacion != 0){
+        res.status(200).send({Mensaje:'Empleado deshabilitado con exito'});  
+      }
+      else{
+        res.status(200).send({Mensaje:'El Empleado no existe'});
+      }
+    }
+  });
+}
+*/
+
+module.exports={  
+    guardarAlmacen,
+    modificarAlmacen,
+    getAlmacenes,
+    getAlmacen,
+  //  eliminarAlmacen,    
+};

@@ -12,9 +12,10 @@ connection.connect(function(error){
 function guardarProblema(req,res){
   //Recoger parametros peticion
   var params = req.body;
-  if(params.id_tipo_problema && params.descripcion_problema && params.id_usuario && params.id_usuario_designado && params.estatus && params.fecha_solicitud && params.fecha_aceptado && params.fecha_revision && params.fecha_enproceso && params.terminado && params.fecha_rechazado && connection){    
-    var query = connection.query('INSERT INTO problema(id_tipo_problema, descripcion_problema, id_usuario, id_usuario_designado, estatus, fecha_solicitud, fecha_aceptado, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado) VALUES(?,?,?,?,?,?,?,?,?,?,?)',
-    [params.id_tipo_problema, params.descripcion_problema , params.id_usuario , params.id_usuario_designado , params.estatus , params.fecha_solicitud , params.fecha_aceptado , params.fecha_revision , params.fecha_enproceso , params.terminado , params.fecha_rechazado],function(error, result){
+  if(params.id_tipo_problema && params.descripcion_problema && params.id_usuario && params.estatus && params.fecha_solicitud  && connection){    
+
+    var query = connection.query('INSERT INTO problema(id_tipo_problema, descripcion_problema, id_usuario,  estatus, fecha_solicitud) VALUES(?,?,?,?,?)',
+    [params.id_tipo_problema, params.descripcion_problema , params.id_usuario , params.estatus , params.fecha_solicitud ],function(error, result){
      if(error){
         // throw error;
         res.status(200).send({Mensaje:'Error al registrar problema'});
@@ -73,61 +74,76 @@ function ProblemaEstatus(req,res){
     var hora = date.toLocaleTimeString('en-US').split(' ')[0];
     //console.log(hora);
     var datetime = fecha+' '+ hora;
+    console.log(datetime);
 
-    if (params.estatus == 'ACEPTADO'){
-      var query = connection.query('UPDATE problema SET estatus=?, fecha_aceptado = ? WHERE id_problema = ?',
-      [params.esatus, datetime, id_problema],function(error, result){
-        if(error){
-          //throw error;
-          res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
+    //ver si existe el problema
+    var query_verificar = connection.query('SELECT id_problema FROM problema WHERE id_problema =?',[id_problema], function(error, result){    
+      if(error){
+        //throw error;
+        res.status(200).send({Mensaje:'Error al verificar existencia'});
+      }else{
+        var resultado_verificacion = result;
+        //Modificar Sucursal//
+        if(resultado_verificacion.length != 0){
+          
+          if (params.estatus == 'ACEPTADO'){
+            var query = connection.query('UPDATE problema SET estatus=?, fecha_aceptado = ? WHERE id_problema = ?',
+            [params.esatus, datetime, id_problema],function(error, result){
+              if(error){
+                //throw error;
+                res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
+              }else{
+                res.status(200).send({Mensaje:'Estatus del problema modificado con exito'});
+              }
+            });      
+          }else if(params.estatus == 'REVISION'){
+            var query = connection.query('UPDATE problema SET estatus=?, fecha_revision= ? WHERE id_problema = ?',
+            [params.esatus, datetime, id_problema],function(error, result){
+              if(error){
+                //throw error;
+                res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
+              }else{
+                res.status(200).send({Mensaje:'Estatus del problema modificado con exito'});
+              }
+            });      
+      
+          }else if(params.estatus == 'PROCESO'){
+            var query = connection.query('UPDATE problema SET estatus=?, fecha_enproceso = ? WHERE id_problema = ?',
+            [params.esatus, datetime, id_problema],function(error, result){
+              if(error){
+                //throw error;
+                res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
+              }else{
+                res.status(200).send({Mensaje:'Estatus del problema modificado con exito'});
+              }
+            });            
+          }else if(params.estatus == 'TERMINADO'){
+            var query = connection.query('UPDATE problema SET estatus=?, fecha_terminado = ? WHERE id_problema = ?',
+            [params.esatus, datetime, id_problema],function(error, result){
+              if(error){
+                //throw error;
+                res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
+              }else{
+                res.status(200).send({Mensaje:'Estatus del problema modificado con exito'});
+              }
+            });      
+      
+          }else if(params.estatus == 'RECHAZADO'){
+            var query = connection.query('UPDATE problema SET estatus=?, fecha_rechazado = ? WHERE id_problema = ?',
+            [params.esatus, datetime, id_problema],function(error, result){
+              if(error){
+                //throw error;
+                res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
+              }else{
+                res.status(200).send({Mensaje:'Estatus del problema modificado con exito'});
+              }
+            });      
+          }
         }else{
-          res.status(200).send({Mensaje:'Estatus del problema modificado con exito'});
-        }
-      });      
-    }else if(params.estatus == 'REVISION'){
-      var query = connection.query('UPDATE problema SET estatus=?, fecha_revision= ? WHERE id_problema = ?',
-      [params.esatus, datetime, id_problema],function(error, result){
-        if(error){
-          //throw error;
-          res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
-        }else{
-          res.status(200).send({Mensaje:'Estatus del problema modificado con exito'});
-        }
-      });      
-
-    }else if(params.estatus == 'PROCESO'){
-      var query = connection.query('UPDATE problema SET estatus=?, fecha_enproceso = ? WHERE id_problema = ?',
-      [params.esatus, datetime, id_problema],function(error, result){
-        if(error){
-          //throw error;
-          res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
-        }else{
-          res.status(200).send({Mensaje:'Estatus del problema modificado con exito'});
-        }
-      });            
-    }else if(params.estatus == 'TERMINADO'){
-      var query = connection.query('UPDATE problema SET estatus=?, fecha_terminado = ? WHERE id_problema = ?',
-      [params.esatus, datetime, id_problema],function(error, result){
-        if(error){
-          //throw error;
-          res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
-        }else{
-          res.status(200).send({Mensaje:'Estatus del problema modificado con exito'});
-        }
-      });      
-
-    }else if(params.estatus == 'RECHAZADO'){
-      var query = connection.query('UPDATE problema SET estatus=?, fecha_terminado = ? WHERE id_problema = ?',
-      [params.esatus, datetime, id_problema],function(error, result){
-        if(error){
-          //throw error;
-          res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
-        }else{
-          res.status(200).send({Mensaje:'Estatus del problema modificado con exito'});
-        }
-      });      
-    }
-    
+          res.status(200).send({Mensaje:'El problema no existe'});
+        }        
+      }
+    });
   }else{
     res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el estatus del problema'});
   }
@@ -135,19 +151,19 @@ function ProblemaEstatus(req,res){
 
 
 function getProblemas(req,res){
-  var query = connection.query('SELECT * FROM rol', [], function(error, result){
+  var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema,problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, id_usuario_designado, problema.estatus, fecha_solicitud, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado', [], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición'});
     }else{
 
-      var roles = result;
+      var problemas = result;
             
-      if(roles.length != 0){
-        res.status(200).json(roles);   
+      if(problemas.length != 0){
+        res.status(200).json(problemas);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Roles'});
+        res.status(200).send({Mensaje:'No hay problemas'});
       }
     }
   });
@@ -157,7 +173,7 @@ function getProblemas(req,res){
 function getProblema(req,res){
   var id_problema = req.params.id_problema;
 
-  var query = connection.query('SELECT * FROM problema WHERE id_problema=?', [id_problema], function(error, result){
+  var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema,problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, id_usuario_designado, problema.estatus, fecha_solicitud, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado WHERE id_problema=?', [id_problema], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición'});
@@ -184,5 +200,4 @@ module.exports={
     getProblemas,
     getProblema,
     ProblemaEstatus,
-
 };

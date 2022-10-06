@@ -74,7 +74,7 @@ function ProblemaEstatus(req,res){
     var hora = date.toLocaleTimeString('en-US').split(' ')[0];
     //console.log(hora);
     var datetime = fecha+' '+ hora;
-    console.log(datetime);
+    //console.log(datetime);
 
     //ver si existe el problema
     var query_verificar = connection.query('SELECT id_problema FROM problema WHERE id_problema =?',[id_problema], function(error, result){    
@@ -87,8 +87,9 @@ function ProblemaEstatus(req,res){
         if(resultado_verificacion.length != 0){
           
           if (params.estatus == 'ACEPTADO'){
-            var query = connection.query('UPDATE problema SET estatus=?, fecha_aceptado = ? WHERE id_problema = ?',
-            [params.esatus, datetime, id_problema],function(error, result){
+            
+            var query = connection.query('UPDATE problema SET estatus=?, id_usuario_designado = ? ,fecha_aceptado = ? WHERE id_problema = ?',
+            [params.estatus, params.id_usuario_designado, datetime, id_problema],function(error, result){
               if(error){
                 //throw error;
                 res.status(200).send({Mensaje:'Error al modificar el estatus del problema'});
@@ -151,45 +152,62 @@ function ProblemaEstatus(req,res){
 
 
 function getProblemas(req,res){
-  var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema,problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, id_usuario_designado, problema.estatus, fecha_solicitud, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado', [], function(error, result){
+
+  var query_temporal = connection.query('CREATE TEMPORARY TABLE IF NOT EXISTS problema_usuario_designado AS (SELECT problema.id_usuario_designado, empleado.nombre_empleado FROM problema INNER JOIN usuario ON usuario.id_usuario = problema.id_usuario_designado INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado)', [], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la creacion de la tabla usuario designado'});
     }else{
-
-      var problemas = result;
-            
-      if(problemas.length != 0){
-        res.status(200).json(problemas);   
-      }
-      else{
-        res.status(200).send({Mensaje:'No hay problemas'});
-      }
+      //res.status(200).send({Mensaje:'tabla de usuario designado creada con exito'});
+      var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, problema.id_usuario_designado, problema_usuario_designado.nombre_empleado, problema.estatus, fecha_solicitud, fecha_aceptado, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN  problema_usuario_designado ON problema.id_usuario_designado = problema_usuario_designado.id_usuario_designado', [], function(error, result){
+        if(error){
+          // throw error;
+          res.status(200).send({Mensaje:'Error en la petición'});
+        }else{
+    
+          var problemas = result;
+                
+          if(problemas.length != 0){
+            res.status(200).json(problemas);   
+          }
+          else{
+            res.status(200).send({Mensaje:'No hay problemas'});
+          }
+        }
+      });
     }
-  });
+  });  
 }
 
 
 function getProblema(req,res){
   var id_problema = req.params.id_problema;
 
-  var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema,problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, id_usuario_designado, problema.estatus, fecha_solicitud, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado WHERE id_problema=?', [id_problema], function(error, result){
+  var query_temporal = connection.query('CREATE TEMPORARY TABLE IF NOT EXISTS problema_usuario_designado AS (SELECT problema.id_usuario_designado, empleado.nombre_empleado FROM problema INNER JOIN usuario ON usuario.id_usuario = problema.id_usuario_designado INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado)', [], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la creacion de la tabla usuario designado'});
     }else{
-
-      var problema = result;
-            
-      if(problema.length != 0){
-        //res.json(rows);
-        res.status(200).json(problema);   
-      }
-      else{
-        res.status(200).send({Mensaje:'El problema no existe'});
-      }
+      //res.status(200).send({Mensaje:'tabla de usuario designado creada con exito'});
+      var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema,problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, problema_usuario_designado.nombre_empleado, problema.id_usuario_designado, problema.estatus, fecha_solicitud, fecha_aceptado, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN  problema_usuario_designado ON problema.id_usuario_designado = problema_usuario_designado.id_usuario_designado WHERE id_problema=?', [id_problema], function(error, result){
+        if(error){
+          // throw error;
+          res.status(200).send({Mensaje:'Error en la petición'});
+        }else{
+    
+          var problema = result;
+                
+          if(problema.length != 0){
+            //res.json(rows);
+            res.status(200).json(problema);   
+          }
+          else{
+            res.status(200).send({Mensaje:'El problema no existe'});
+          }
+        }
+      });
     }
-  });
+  });  
 }
 
 

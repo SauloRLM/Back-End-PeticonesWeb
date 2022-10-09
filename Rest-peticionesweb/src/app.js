@@ -21,6 +21,7 @@ var codigo_articulo = require('./routes/codigo_articulo');
 var almacen = require('./routes/almacen');
 var articulo_problema = require('./routes/articulo_problema');
 var problema = require('./routes/problema');
+var requisito_problema = require('./routes/requisito_problema');
 
 //middlewares de body-parser
 app.use(bodyParser.urlencoded({extended:false}));
@@ -37,6 +38,6 @@ app.use((req,res,next)=>{
 });
 
 //rutas base body-parser
-app.use('/api', sucursal, empleado, rol, usuario, tipo_problema, usuario_problema, codigo_articulo, almacen, articulo_problema, problema);
+app.use('/api', sucursal, empleado, rol, usuario, tipo_problema, usuario_problema, codigo_articulo, almacen, articulo_problema, problema, requisito_problema);
 
 module.exports = app;

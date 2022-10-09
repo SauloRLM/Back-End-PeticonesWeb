@@ -12,9 +12,9 @@ connection.connect(function(error){
 function guardarRequisitoProblema(req,res){
   //Recoger parametros peticion
   var params = req.body;
-  console.table(params);
+  //console.table(params);
   if(params.id_problema && params.id_codigo_articulo && params.cantidad && params.unidad && params.cantidad  && connection){    
-    console.log("entra al if codigo articulo");
+    //console.log("entra al if codigo articulo");
     var query_verificar = connection.query('SELECT id_requisito_problema FROM requisito_problema WHERE id_problema =? AND id_codigo_articulo = ?',[params.id_problema, params.id_codigo_articulo], function(error, result){
       if(error){
           //throw error;

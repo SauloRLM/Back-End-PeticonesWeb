@@ -4,7 +4,12 @@ module.exports = () => {
     return mysql.createConnection({
         host: 'localhost',
         user: 'root',
-        password: 'Saulo@123',
+        password: 'saulo2000',
         database: 'peticionesweb',         
     });        
 }
+
+/*
+    password:'saulo2000',
+    Saulo@123
+*/

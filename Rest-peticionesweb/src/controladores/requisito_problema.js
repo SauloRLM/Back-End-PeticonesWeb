@@ -38,8 +38,6 @@ function guardarRequisitoProblema(req,res){
       }
       });    
   }else if (params.id_problema && params.descripcion_requisito && params.cantidad && params.unidad && params.cantidad  && connection){    
-
-    console.log("entra al if codigo articulo");
     var query_verificar = connection.query('SELECT id_requisito_problema FROM requisito_problema WHERE id_problema =? AND descripcion_requisito = ?',[params.id_problema, params.descripcion_requisito], function(error, result){
       if(error){
           //throw error;
@@ -133,7 +131,7 @@ function modificarRequisitoProblema(req,res){
 //pedir todos los requisitos de este problema
 function getRequisitosProblema(req,res){
   var id_problema = req.params.id_problema;  
-  var query = connection.query('select requisito_problema.id_requisito_problema, requisito_problema.id_problema, codigo_articulo.nombre_articulo, requisito_problema.descripcion_requisito, requisito_problema.cantidad, requisito_problema.unidad, requisito_problema.precio from requisito_problema INNER JOIN codigo_articulo ON codigo_articulo.id_codigo_articulo = requisito_problema.id_requisito_problema WHERE requisito_problema.id_problema = ?', [id_problema], function(error, result){
+  var query = connection.query('select requisito_problema.id_requisito_problema, requisito_problema.id_problema, codigo_articulo.nombre_articulo, requisito_problema.descripcion_requisito, requisito_problema.cantidad, requisito_problema.unidad, requisito_problema.precio from requisito_problema INNER JOIN codigo_articulo ON codigo_articulo.id_codigo_articulo = requisito_problema.id_codigo_articulo WHERE requisito_problema.id_problema = ?', [id_problema], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición'});
@@ -153,7 +151,7 @@ function getRequisitosProblema(req,res){
 function getRequisitoProblema(req,res){
   var id_requisito_problema = req.params.id_requisito_problema; 
   var id_problema = req.params.id_problema; 
-var query = connection.query('select requisito_problema.id_requisito_problema, requisito_problema.id_problema, codigo_articulo.nombre_articulo, requisito_problema.descripcion_requisito, requisito_problema.cantidad, requisito_problema.unidad, requisito_problema.precio from requisito_problema INNER JOIN codigo_articulo ON codigo_articulo.id_codigo_articulo = requisito_problema.id_requisito_problema WHERE requisito_problema.id_problema = ? AND requisito_problema.id_requisito_problema = ?', [id_problema,id_requisito_problema], function(error, result){
+var query = connection.query('select requisito_problema.id_requisito_problema, requisito_problema.id_problema, codigo_articulo.nombre_articulo, requisito_problema.descripcion_requisito, requisito_problema.cantidad, requisito_problema.unidad, requisito_problema.precio from requisito_problema INNER JOIN codigo_articulo ON codigo_articulo.id_codigo_articulo = requisito_problema.id_codigo_articulo WHERE requisito_problema.id_problema = ? AND requisito_problema.id_requisito_problema = ?', [id_problema,id_requisito_problema], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición'});

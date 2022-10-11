@@ -4,7 +4,8 @@
 var express = require('express');
 var bodyParser= require('body-parser');
 
-var app=express();
+var app= express();
+
 
 // Compress all HTTP responses
 //app.use(compression());
@@ -36,6 +37,8 @@ app.use((req,res,next)=>{
 	res.header('Allow','GET,POST,OPTIONS,PUT,DELETE');
 	next();	
 });
+
+
 
 //rutas base body-parser
 app.use('/api', sucursal, empleado, rol, usuario, tipo_problema, usuario_problema, codigo_articulo, almacen, articulo_problema, problema, requisito_problema);

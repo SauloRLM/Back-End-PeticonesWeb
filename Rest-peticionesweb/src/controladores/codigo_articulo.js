@@ -121,36 +121,9 @@ function getCodigoArticulo(req,res){
   });
 }
 
-/*
-function eliminarCodigoProblema(req,res){
-
-  var id_tipo_problema = req.params.id_usuario;
-  var estatus = 'B';
-  var query = connection.query('UPDATE tipo_problema SET estatus = ? WHERE id_tipo_problema = ?',
-  [estatus, id_tipo_problema],function(error, result){
-
-    if(error){
-      //throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
-    }else{
-
-      var resultado_verificacion = result.affectedRows;
-            
-      if(resultado_verificacion != 0){
-        res.status(200).send({Mensaje:'Tipo de problema deshabilitado con exito'});  
-      }
-      else{
-        res.status(200).send({Mensaje:'El Tipo de problema no existe'});
-      }
-    }
-  });
-}
-*/
-
 module.exports={  
     guardarCodigoArticulo,
     modificarCodigoArticulo,
     getCodigosArticulos,
     getCodigoArticulo,
-    //eliminarTipoProblema,    
 };

@@ -174,32 +174,6 @@ function getAlmacen(req,res){
   });
 }
 
-/*
-function eliminarAlmacen(req,res){
-
-  var id_empleado = req.params.id_empleado;
-  var estatus = 'B';
-  var query = connection.query('UPDATE empleado SET estatus = ? WHERE id_empleado = ?',
-  [estatus, id_empleado],function(error, result){
-
-    if(error){
-      //throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
-    }else{
-
-      var resultado_verificacion = result.affectedRows;
-            
-      if(resultado_verificacion != 0){
-        res.status(200).send({Mensaje:'Empleado deshabilitado con exito'});  
-      }
-      else{
-        res.status(200).send({Mensaje:'El Empleado no existe'});
-      }
-    }
-  });
-}
-*/
-
 module.exports={  
     guardarAlmacen,
     modificarAlmacen,

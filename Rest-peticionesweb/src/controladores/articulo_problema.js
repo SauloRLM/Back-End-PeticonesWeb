@@ -65,7 +65,7 @@ function guardarArticuloProblema(req,res){
                     }          
                 });                             
               }else{
-                  res.status(200).send({Mensaje:'El articulo no existe o no esta registrado en almacen'});
+                  res.status(200).send({Mensaje:'El Articulo no existe o no esta registrado en almacen'});
               }
             }
           });          

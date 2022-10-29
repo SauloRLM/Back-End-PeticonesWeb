@@ -17,7 +17,7 @@ function guardarSucursal(req,res){
 
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia', Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Registrar Empleado//
@@ -27,19 +27,19 @@ function guardarSucursal(req,res){
           [params.id_sucursal, params.nombre_sucursal, params.domicilio, params.correo, params.telefono, params.estatus],function(error, result){
            if(error){
               // throw error;
-              res.status(200).send({Mensaje:'Error al registrar la sucursal'});
+              res.status(200).send({Mensaje:'Error al registrar la sucursal', Estatus:'Error'});
            }else{
-              res.status(200).send({Mensaje:'sucursal registrada con exito'});
+              res.status(200).send({Mensaje:'sucursal registrada con exito', Estatus:'Ok'});
            }
          });
         }
         else{
-          res.status(200).send({Mensaje:'sucursal ya registrada anteriormente'});
+          res.status(200).send({Mensaje:'sucursal ya registrada anteriormente', Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar la sucursal'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar la sucursal', Estatus:'Error'});
   }
 }
 

@@ -18,7 +18,7 @@ function guardarTipoProblema(req,res){
 
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
 
         var resultado_verificacion = result;
@@ -29,18 +29,18 @@ function guardarTipoProblema(req,res){
                             [params.tipo_problema, params.descripcion_tipo_problema, params.estatus],function(error, result){
                                 if(error){
                                 // throw error;
-                                    res.status(200).send({Mensaje:'Error Al registrar al Tipo de Problema'});
+                                    res.status(200).send({Mensaje:'Error Al registrar al Tipo de Problema',Estatus:'Error'});
                                 }else{
-                                    res.status(200).send({Mensaje:'Tipo de Problema registrado con exito'});
+                                    res.status(200).send({Mensaje:'Tipo de Problema registrado con exito',Estatus:'Ok'});
                                 }
             });             
         }else{
-          res.status(200).send({Mensaje:'Tipo de problema ya registrado en el sistema'});
+          res.status(200).send({Mensaje:'Tipo de problema ya registrado en el sistema',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el tipo de problema'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el tipo de problema',Estatus:'Error'});
   }
 }
 
@@ -54,7 +54,7 @@ function modificarTipoProblema(req,res){
     var query_verificar = connection.query('SELECT id_tipo_problema FROM tipo_problema WHERE id_tipo_problema =?',[id_tipo_problema], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Sucursal//
@@ -64,19 +64,19 @@ function modificarTipoProblema(req,res){
             [params.tipo_problema, params.descripcion_tipo_problema, params.estatus, id_tipo_problema],function(error, result){
                 if(error){
                     //throw error;
-                    res.status(200).send({Mensaje:'Error al modificar el tipo de problema'});
+                    res.status(200).send({Mensaje:'Error al modificar el tipo de problema',Estatus:'Error'});
                 }else{
-                    res.status(200).send({Mensaje:'Tipo de Problema modificado con exito'});
+                    res.status(200).send({Mensaje:'Tipo de Problema modificado con exito',Estatus:'Ok'});
                 }
             });                                                                           
         }
         else{
-          res.status(200).send({Mensaje:'El Tipo Problema no existe'});
+          res.status(200).send({Mensaje:'El Tipo Problema no existe',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Tipo Problema'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Tipo Problema',Estatus:'Error'});
   }
 }
 
@@ -85,7 +85,7 @@ function getTiposProblemas(req,res){
   var query = connection.query('SELECT * FROM tipo_problema', [], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var tipos_problemas = result;
@@ -94,7 +94,7 @@ function getTiposProblemas(req,res){
         res.status(200).json(tipos_problemas);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Tipo de Problema'});
+        res.status(200).send({Mensaje:'No hay Tipo de Problema',Estatus:'Error'});
       }
     }
   });
@@ -107,7 +107,7 @@ function getTipoProblema(req,res){
   var query = connection.query('SELECT * FROM tipo_problema WHERE id_tipo_problema =?', [id_tipo_problema], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var tipo_problema = result;
@@ -117,7 +117,7 @@ function getTipoProblema(req,res){
         res.status(200).json(tipo_problema);   
       }
       else{
-        res.status(200).send({Mensaje:'El tipo de problema no existe'});
+        res.status(200).send({Mensaje:'El tipo de problema no existe',Estatus:'Error'});
       }
     }
   });
@@ -133,16 +133,16 @@ function eliminarTipoProblema(req,res){
 
     if(error){
       //throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var resultado_verificacion = result.affectedRows;
             
       if(resultado_verificacion != 0){
-        res.status(200).send({Mensaje:'Tipo de problema deshabilitado con exito'});  
+        res.status(200).send({Mensaje:'Tipo de problema deshabilitado con exito',Estatus:'Ok'});  
       }
       else{
-        res.status(200).send({Mensaje:'El Tipo de problema no existe'});
+        res.status(200).send({Mensaje:'El Tipo de problema no existe',Estatus:'Error'});
       }
     }
   });

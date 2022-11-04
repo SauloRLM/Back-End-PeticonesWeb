@@ -17,7 +17,7 @@ function guardarCodigoArticulo(req,res){
     var query_verificar = connection.query('SELECT id_codigo_articulo FROM codigo_articulo WHERE id_codigo_articulo =?',[params.id_codigo_articulo], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
 
         var resultado_verificacion = result;
@@ -25,21 +25,21 @@ function guardarCodigoArticulo(req,res){
         if(resultado_verificacion.length == 0){
 
             var query = connection.query('INSERT INTO codigo_articulo(id_codigo_articulo, nombre_articulo) VALUES(?,?)',
-                            [params.id_codigo_articulo, params.nombre_articulo],function(error, result){
-                                if(error){
-                                // throw error;
-                                    res.status(200).send({Mensaje:'Error Al registrar el Codigo y el Articulo'});
-                                }else{
-                                    res.status(200).send({Mensaje:'Codigo y Articulo registrado con exito'});
-                                }
+                [params.id_codigo_articulo, params.nombre_articulo],function(error, result){
+                  if(error){
+                      // throw error;
+                      res.status(200).send({Mensaje:'Error Al registrar el Codigo y el Articulo',Estatus:'Error'});
+                    }else{
+                      res.status(200).send({Mensaje:'Codigo y Articulo registrado con exito',Estatus:'Ok'});
+                    }
             });             
         }else{
-          res.status(200).send({Mensaje:'Codigo de ariculo ya registrado en el sistema'});
+          res.status(200).send({Mensaje:'Codigo de ariculo ya registrado en el sistema',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Codigo y el Articulo'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Codigo y el Articulo',Estatus:'Error'});
   }
 }
 
@@ -52,7 +52,7 @@ function modificarCodigoArticulo(req,res){
     var query_verificar = connection.query('SELECT id_codigo_articulo FROM codigo_articulo WHERE id_codigo_articulo =?',[id_codigo_articulo], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia', Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Sucursal//
@@ -62,19 +62,19 @@ function modificarCodigoArticulo(req,res){
             [ params.nombre_articulo, id_codigo_articulo],function(error, result){
                 if(error){
                     //throw error;
-                    res.status(200).send({Mensaje:'Error al modificar nombre del articulo'});
+                    res.status(200).send({Mensaje:'Error al modificar nombre del articulo',Estatus:'Error'});
                 }else{
-                    res.status(200).send({Mensaje:'nombre de articulo modificado con exito'});
+                    res.status(200).send({Mensaje:'Nombre de articulo modificado con exito',Estatus:'Ok'});
                 }
             });                                                                           
         }
         else{
-          res.status(200).send({Mensaje:'El codigo del articulo no existe'});
+          res.status(200).send({Mensaje:'El codigo del articulo no existe',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el nombre del articulo'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el nombre del articulo',Estatus:'Error'});
   }
 }
 
@@ -83,7 +83,7 @@ function getCodigosArticulos(req,res){
   var query = connection.query('SELECT * FROM codigo_articulo', [], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var codigos_articulos = result;
@@ -92,7 +92,7 @@ function getCodigosArticulos(req,res){
         res.status(200).json(codigos_articulos);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Codigos de Articulos'});
+        res.status(200).send({Mensaje:'No hay Codigos de Articulos',Estatus:'Error'});
       }
     }
   });
@@ -105,7 +105,7 @@ function getCodigoArticulo(req,res){
   var query = connection.query('SELECT * FROM codigo_articulo WHERE id_codigo_articulo =?', [id_codigo_articulo], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var codigo_articulo = result;
@@ -115,7 +115,7 @@ function getCodigoArticulo(req,res){
         res.status(200).json(codigo_articulo);   
       }
       else{
-        res.status(200).send({Mensaje:'El Codigo Articulo no existe'});
+        res.status(200).send({Mensaje:'El Codigo Articulo no existe',Estatus:'Error'});
       }
     }
   });

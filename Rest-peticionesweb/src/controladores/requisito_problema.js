@@ -18,7 +18,7 @@ function guardarRequisitoProblema(req,res){
     var query_verificar = connection.query('SELECT id_requisito_problema FROM requisito_problema WHERE id_problema =? AND id_codigo_articulo = ?',[params.id_problema, params.id_codigo_articulo], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Sucursal//
@@ -27,13 +27,13 @@ function guardarRequisitoProblema(req,res){
           [params.id_problema, params.id_codigo_articulo , params.cantidad , params.unidad , params.precio ],function(error, result){
             if(error){
                 // throw error;
-                res.status(200).send({Mensaje:'Error al registrar Requisito problema'});
+                res.status(200).send({Mensaje:'Error al registrar Requisito problema',Estatus:'Error'});
             }else{
-                res.status(200).send({Mensaje:'Requisito del problema registrado con exito'});
+                res.status(200).send({Mensaje:'Requisito del problema registrado con exito',Estatus:'Ok'});
             }
           });
         }else{
-          res.status(200).send({Mensaje:'Error ya existe ese requisito'});
+          res.status(200).send({Mensaje:'Error ya existe ese requisito',Estatus:'Error'});
         }
       }
       });    
@@ -41,7 +41,7 @@ function guardarRequisitoProblema(req,res){
     var query_verificar = connection.query('SELECT id_requisito_problema FROM requisito_problema WHERE id_problema =? AND descripcion_requisito = ?',[params.id_problema, params.descripcion_requisito], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Sucursal//
@@ -50,18 +50,18 @@ function guardarRequisitoProblema(req,res){
           [params.id_problema, params.descripcion_requisito , params.cantidad , params.unidad , params.precio ],function(error, result){
             if(error){
                 // throw error;
-                res.status(200).send({Mensaje:'Error al registrar Requisito problema'});
+                res.status(200).send({Mensaje:'Error al registrar Requisito problema',Estatus:'Error'});
             }else{
-                res.status(200).send({Mensaje:'Requisito del problema registrado con exito'});
+                res.status(200).send({Mensaje:'Requisito del problema registrado con exito',Estatus:'Ok'});
             }
           });
         }else{
-          res.status(200).send({Mensaje:'Error ya existe ese requisito'});
+          res.status(200).send({Mensaje:'Error ya existe ese requisito',Estatus:'Error'});
         }
       }
       });        
   }else{
-    res.status(200).send({Mensaje:'Introduce la informacion correcta para registrar un requisito'});
+    res.status(200).send({Mensaje:'Introduce la informacion correcta para registrar un requisito',Estatus:'Error'});
   }
 }
 
@@ -74,7 +74,7 @@ function modificarRequisitoProblema(req,res){
       var query_verificar = connection.query('SELECT id_requisito_problema FROM requisito_problema WHERE id_requisito_problema =?',[id_requisito_problema], function(error, result){
         if(error){
             //throw error;
-            res.status(200).send({Mensaje:'Error al verificar existencia'});
+            res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
          }else{
           var resultado_verificacion = result;
           //Modificar Sucursal//
@@ -86,14 +86,14 @@ function modificarRequisitoProblema(req,res){
               [params.id_codigo_articulo, params.cantidad, params.unidad, params.precio ,id_requisito_problema],function(error, result){
                   if(error){
                   //throw error;
-                  res.status(200).send({Mensaje:'Error al modificar Requisito de Problema'});
+                  res.status(200).send({Mensaje:'Error al modificar Requisito de Problema',Estatus:'Error'});
                   }else{
-                  res.status(200).send({Mensaje:'Requisito de problema modificado con exito'});
+                  res.status(200).send({Mensaje:'Requisito de problema modificado con exito',Estatus:'Ok'});
                   }
               });            
           }
           else{
-            res.status(200).send({Mensaje:'Requisito de problema no registrado o no existe'});
+            res.status(200).send({Mensaje:'Requisito de problema no registrado o no existe',Estatus:'Error'});
           }
          }
       });
@@ -103,7 +103,7 @@ function modificarRequisitoProblema(req,res){
     var query_verificar = connection.query('SELECT id_requisito_problema FROM requisito_problema WHERE id_requisito_problema =?',[id_requisito_problema], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Requisito//
@@ -112,19 +112,19 @@ function modificarRequisitoProblema(req,res){
           [params.descripcion_requisito, params.cantidad, params.unidad, params.precio ,id_requisito_problema],function(error, result){
               if(error){
               //throw error;
-              res.status(200).send({Mensaje:'Error al modificar Requisito de Problema'});
+              res.status(200).send({Mensaje:'Error al modificar Requisito de Problema',Estatus:'Error'});
               }else{
-              res.status(200).send({Mensaje:'Requisito de problema modificado con exito'});
+              res.status(200).send({Mensaje:'Requisito de problema modificado con exito',Estatus:'Ok'});
               }
           });                  
         }else{
-          res.status(200).send({Mensaje:'Requisito de problema no registrado o no existe'});
+          res.status(200).send({Mensaje:'Requisito de problema no registrado o no existe',Estatus:'Error'});
         }
        }
     });
   
   }else {
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Requisito del problema'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Requisito del problema',Estatus:'Error'});
   }
 }
 
@@ -134,14 +134,14 @@ function getRequisitosProblema(req,res){
   var query = connection.query('select requisito_problema.id_requisito_problema, requisito_problema.id_problema, codigo_articulo.nombre_articulo, requisito_problema.descripcion_requisito, requisito_problema.cantidad, requisito_problema.unidad, requisito_problema.precio from requisito_problema INNER JOIN codigo_articulo ON codigo_articulo.id_codigo_articulo = requisito_problema.id_codigo_articulo WHERE requisito_problema.id_problema = ?', [id_problema], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
       var Requisitosproblema = result;            
       if(Requisitosproblema.length != 0){
         res.status(200).json(Requisitosproblema);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Requisitos para este problema'});
+        res.status(200).send({Mensaje:'No hay Requisitos para este problema',Estatus:'Error'});
       }
     }
   });
@@ -154,14 +154,14 @@ function getRequisitoProblema(req,res){
 var query = connection.query('select requisito_problema.id_requisito_problema, requisito_problema.id_problema, codigo_articulo.nombre_articulo, requisito_problema.descripcion_requisito, requisito_problema.cantidad, requisito_problema.unidad, requisito_problema.precio from requisito_problema INNER JOIN codigo_articulo ON codigo_articulo.id_codigo_articulo = requisito_problema.id_codigo_articulo WHERE requisito_problema.id_problema = ? AND requisito_problema.id_requisito_problema = ?', [id_problema,id_requisito_problema], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
       var Requisitoproblema = result;            
       if(Requisitoproblema.length != 0){
         res.status(200).json(Requisitoproblema);   
       }
       else{
-        res.status(200).send({Mensaje:'No existe ese Requisito para este problema'});
+        res.status(200).send({Mensaje:'No existe ese Requisito para este problema',Estatus:'Error'});
       }
     }
   });

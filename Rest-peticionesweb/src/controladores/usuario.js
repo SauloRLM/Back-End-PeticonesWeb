@@ -51,30 +51,30 @@ function guardarUsuario(req,res){
                             [params.id_empleado, params.id_rol, params.usuario, params.password, params.estatus],function(error, result){
                                 if(error){
                                 // throw error;
-                                    res.status(200).send({Mensaje:'Error al registrar el Usuario'});
+                                    res.status(200).send({Mensaje:'Error al registrar el Usuario',Estatus:'Error'});
                                 }else{
-                                    res.status(200).send({Mensaje:'Usuario registrado con exito'});
+                                    res.status(200).send({Mensaje:'Usuario registrado con exito',Estatus:'Ok'});
                                 }
                             });
 
                         }else{
-                            res.status(200).send({Mensaje:'El Rol no existe o no esta registrado'});
+                            res.status(200).send({Mensaje:'El Rol no existe o no esta registrado',Estatus:'Error'});
                         }
                     }
                 });
               }else{
-                  res.status(200).send({Mensaje:'El Empleado no existe o no esta registrado'});
+                  res.status(200).send({Mensaje:'El Empleado no existe o no esta registrado',Estatus:'Error'});
               }
             }
           });
           
         }else{
-          res.status(200).send({Mensaje:'Usuario ya registrado en el sistema'});
+          res.status(200).send({Mensaje:'Usuario ya registrado en el sistema',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Usuario'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Usuario',Estatus:'Error'});
   }
 }
 
@@ -88,7 +88,7 @@ function modificarUsuario(req,res){
     var query_verificar = connection.query('SELECT id_usuario FROM usuario WHERE id_usuario =?',[id_usuario], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Sucursal//
@@ -97,7 +97,7 @@ function modificarUsuario(req,res){
             var query_verificar_rol = connection.query('SELECT id_rol FROM rol WHERE id_rol =?',[params.id_rol], function(error, result){
                 if(error){
                     //throw error;
-                    res.status(200).send({Mensaje:'Error al verificar existencia'});
+                    res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
                  }else{
                   var resultado_verificacion = result;
                   //Modificar//
@@ -108,37 +108,37 @@ function modificarUsuario(req,res){
                     [params.usuario, id_usuario], function(error, result){
                       if(error){
                         //throw error;
-                        res.status(200).send({Mensaje:'Error al verificar existencia'});
+                        res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
                      }else{
                       var resultado_verificacion_nuevousuario = result;
                       if(resultado_verificacion_nuevousuario.length != 0){                   
-                        res.status(200).send({Mensaje:'Error el usuario ya esta en uso'});
+                        res.status(200).send({Mensaje:'Error el usuario ya esta en uso',Estatus:'Error'});
                       }else{
                         var query = connection.query('UPDATE usuario SET id_rol =?, usuario =?, password =?, estatus=?  WHERE id_usuario = ?',
                         [params.id_rol, params.usuario, params.password, params.estatus, id_usuario],function(error, result){
                           if(error){
                           //throw error;
-                            res.status(200).send({Mensaje:'Error al modificar Usuario'});
+                            res.status(200).send({Mensaje:'Error al modificar Usuario',Estatus:'Error'});
                           }else{
-                            res.status(200).send({Mensaje:'Usuario modificado con exito'});
+                            res.status(200).send({Mensaje:'Usuario modificado con exito',Estatus:'Ok'});
                           }
                         });                                                                
                       }
                      }
                     });                  
                   }else{
-                    res.status(200).send({Mensaje:'El Rol no existe'});
+                    res.status(200).send({Mensaje:'El Rol no existe',Estatus:'Error'});
                   }
                  }
               });          
         }
         else{
-          res.status(200).send({Mensaje:'El Usuario no existe'});
+          res.status(200).send({Mensaje:'El Usuario no existe',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el usuario'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el usuario',Estatus:'Error'});
   }
 }
 
@@ -148,7 +148,7 @@ function getUsuarios(req,res){
   var query = connection.query('SELECT * FROM usuario', [], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var usuarios = result;
@@ -157,7 +157,7 @@ function getUsuarios(req,res){
         res.status(200).json(usuarios);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Usuarios'});
+        res.status(200).send({Mensaje:'No hay Usuarios',Estatus:'Error'});
       }
     }
   });
@@ -170,7 +170,7 @@ function getUsuario(req,res){
   var query = connection.query('SELECT * FROM usuario WHERE id_usuario=?', [id_usuario], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var usuario = result;
@@ -180,7 +180,7 @@ function getUsuario(req,res){
         res.status(200).json(usuario);   
       }
       else{
-        res.status(200).send({Mensaje:'El Usuario no existe'});
+        res.status(200).send({Mensaje:'El Usuario no existe',Estatus:'Error'});
       }
     }
   });
@@ -196,16 +196,16 @@ function eliminarUsuario(req,res){
 
     if(error){
       //throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var resultado_verificacion = result.affectedRows;
             
       if(resultado_verificacion != 0){
-        res.status(200).send({Mensaje:'Usuario deshabilitada con exito'});  
+        res.status(200).send({Mensaje:'Usuario deshabilitada con exito',Estatus:'Ok'});  
       }
       else{
-        res.status(200).send({Mensaje:'El Usuario no existe'});
+        res.status(200).send({Mensaje:'El Usuario no existe',Estatus:'Error'});
       }
     }
   });

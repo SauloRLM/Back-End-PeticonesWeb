@@ -20,7 +20,7 @@ function guardarArticuloProblema(req,res){
     
         if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         
         var resultado_verificacion = result;        
@@ -30,7 +30,7 @@ function guardarArticuloProblema(req,res){
           var query_verificar_articulo = connection.query('SELECT id_articulo FROM almacen WHERE id_articulo =?',[params.id_articulo], function(error, result){
             if(error){
               //throw error;
-              res.status(200).send({Mensaje:'Error al verificar existencia'});
+              res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
             }else{              
 
               var resultado_verificacion_articulo = result;
@@ -41,7 +41,7 @@ function guardarArticuloProblema(req,res){
                     
                     if(error){
                         //throw error;
-                        res.status(200).send({Mensaje:'Error al verificar existencia'});                  
+                        res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});                  
                     }else{
                         
                         var resultado_verificacion_tipo_problema = result;
@@ -53,30 +53,30 @@ function guardarArticuloProblema(req,res){
                             [params.id_articulo, params.id_tipo_problema],function(error, result){
                                 if(error){
                                 // throw error;
-                                    res.status(200).send({Mensaje:'Error al registrar la Articulo al Tipo de Problema'});
+                                    res.status(200).send({Mensaje:'Error al registrar la Articulo al Tipo de Problema',Estatus:'Error'});
                                 }else{
-                                    res.status(200).send({Mensaje:'Articulo registrado con exito al Tipo de Problema'});
+                                    res.status(200).send({Mensaje:'Articulo registrado con exito al Tipo de Problema', Estatus:'Ok'});
                                 }
                             });
 
                         }else{
-                            res.status(200).send({Mensaje:'EL Tipo de Problema no existe o no esta registrado'});
+                            res.status(200).send({Mensaje:'EL Tipo de Problema no existe o no esta registrado',Estatus:'Error'});
                         }
                     }          
                 });                             
               }else{
-                  res.status(200).send({Mensaje:'El Articulo no existe o no esta registrado en almacen'});
+                  res.status(200).send({Mensaje:'El Articulo no existe o no esta registrado en almacen', Estatus:'Error'});
               }
             }
           });          
         }
         else{
-          res.status(200).send({Mensaje:'Articulo ya registrado a este tipo de problema anteriormente'});
+          res.status(200).send({Mensaje:'Articulo ya registrado a este tipo de problema anteriormente',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Articulo al Tipo de Problema'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Articulo al Tipo de Problema',Estatus:'Error'});
   }
 }
 
@@ -90,7 +90,7 @@ function modificarArticuloProblema(req,res){
     var query_verificar = connection.query('SELECT id_articulo_problema FROM articulo_problema WHERE id_articulo_problema =?',[id_articulo_problema], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Sucursal//
@@ -102,19 +102,19 @@ function modificarArticuloProblema(req,res){
             [params.id_articulo, params.id_tipo_problema, id_articulo_problema],function(error, result){
                 if(error){
                 //throw error;
-                res.status(200).send({Mensaje:'Error al modificar Articulo por Tipo de Problema'});
+                res.status(200).send({Mensaje:'Error al modificar Articulo por Tipo de Problema',Estatus:'Error'});
                 }else{
-                res.status(200).send({Mensaje:'Articulo por Tipo de problema modificado con exito'});
+                res.status(200).send({Mensaje:'Articulo por Tipo de problema modificado con exito',Estatus:'Ok'});
                 }
             });            
         }
         else{
-          res.status(200).send({Mensaje:'Articulo por Tipo de problema no registrado o no existe'});
+          res.status(200).send({Mensaje:'Articulo por Tipo de problema no registrado o no existe',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Articulo por tipo de producto'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Articulo por tipo de producto',Estatus:'Error'});
   }
 }
 
@@ -124,7 +124,7 @@ function getArticulosProblemas(req,res){
   var query = connection.query('SELECT articulo_problema.id_articulo_problema, articulo_problema.id_articulo, codigo_articulo.nombre_articulo, articulo_problema.id_tipo_problema, tipo_problema.tipo_problema FROM articulo_problema INNER JOIN almacen ON almacen.id_articulo = articulo_problema.id_articulo INNER JOIN codigo_articulo ON codigo_articulo.id_codigo_articulo = almacen.id_codigo_articulo INNER JOIN tipo_problema ON  tipo_problema.id_tipo_problema = articulo_problema.id_tipo_problema', [], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var articulosproblemas = result;
@@ -133,7 +133,7 @@ function getArticulosProblemas(req,res){
         res.status(200).json(articulosproblemas);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Articulos por tipos de problema'});
+        res.status(200).send({Mensaje:'No hay Articulos por tipos de problema',Estatus:'Error'});
       }
     }
   });
@@ -146,14 +146,14 @@ function getArticuloProblema(req,res){
   var query = connection.query('SELECT articulo_problema.id_articulo_problema, articulo_problema.id_articulo, codigo_articulo.nombre_articulo, articulo_problema.id_tipo_problema, tipo_problema.tipo_problema FROM articulo_problema INNER JOIN almacen ON almacen.id_articulo = articulo_problema.id_articulo INNER JOIN codigo_articulo ON codigo_articulo.id_codigo_articulo = almacen.id_codigo_articulo INNER JOIN tipo_problema ON  tipo_problema.id_tipo_problema = articulo_problema.id_tipo_problema WHERE articulo_problema.id_articulo_problema = ?', [id_articulo_problema], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
       var articuloproblema = result;            
       if(articuloproblema.length != 0){
         //res.json(rows);
         res.status(200).json(articuloproblema);   
       }else{
-        res.status(200).send({Mensaje:'El Articulo por Tipo de Problema no existe'});
+        res.status(200).send({Mensaje:'El Articulo por Tipo de Problema no existe',Estatus:'Error'});
       }
     }
   });

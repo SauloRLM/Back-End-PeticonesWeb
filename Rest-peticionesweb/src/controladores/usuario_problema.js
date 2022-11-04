@@ -20,7 +20,7 @@ function guardarUsuarioProblema(req,res){
 
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
 
         var resultado_verificacion = result;
@@ -31,18 +31,18 @@ function guardarUsuarioProblema(req,res){
                             [params.id_tipo_problema, params.id_usuario, params.estatus],function(error, result){
                                 if(error){
                                 // throw error;
-                                    res.status(200).send({Mensaje:'Error al registrar al usuario y a su tipo problema a resolver'});
+                                    res.status(200).send({Mensaje:'Error al registrar al usuario y a su tipo problema a resolver',Estatus:'Error'});
                                 }else{
-                                    res.status(200).send({Mensaje:'Solucionador y tipo de Problema registrado con exito'});
+                                    res.status(200).send({Mensaje:'Solucionador y tipo de Problema registrado con exito',Estatus:'Ok'});
                                 }
             });             
         }else{
-          res.status(200).send({Mensaje:'El Solucionador  ya esta registrado en el sistema'});
+          res.status(200).send({Mensaje:'El Solucionador  ya esta registrado en el sistema',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Solucionadory su tipo de problema'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Solucionadory su tipo de problema',Estatus:'Error'});
   }
 }
 
@@ -56,7 +56,7 @@ function modificarUsuarioProblema(req,res){
     var query_verificar = connection.query('SELECT id_tipo_problema FROM usuario_problema WHERE id_usuario_problema =?',[id_usuario_problema], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Sucursal//
@@ -66,19 +66,19 @@ function modificarUsuarioProblema(req,res){
             [params.id_tipo_problema, params.id_usuario, params.estatus, id_usuario_problema],function(error, result){
                 if(error){
                     //throw error;
-                    res.status(200).send({Mensaje:'Error al modificar el usuario por tipo de problema'});
+                    res.status(200).send({Mensaje:'Error al modificar el usuario por tipo de problema',Estatus:'Error'});
                 }else{
-                    res.status(200).send({Mensaje:' Usuario por tipo de Problema modificado con exito'});
+                    res.status(200).send({Mensaje:' Usuario por tipo de Problema modificado con exito',Estatus:'Ok'});
                 }
             });                                                                           
         }
         else{
-          res.status(200).send({Mensaje:'El Usuario por Tipo Problema no existe'});
+          res.status(200).send({Mensaje:'El Usuario por Tipo Problema no existe',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar Usuario Por Tipo Problema'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar Usuario Por Tipo Problema',Estatus:'Error'});
   }
 }
 
@@ -87,7 +87,7 @@ function getUsuariosProblemas(req,res){
   var query = connection.query('SELECT  usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario, usuario_problema.estatus FROM usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_usuario_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario', [], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var usuarios_problemas = result;
@@ -96,7 +96,7 @@ function getUsuariosProblemas(req,res){
         res.status(200).json(usuarios_problemas);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Usuarios Por Tipo de Problema'});
+        res.status(200).send({Mensaje:'No hay Usuarios Por Tipo de Problema',Estatus:'Error'});
       }
     }
   });
@@ -108,7 +108,7 @@ function getUsuarioProblema(req,res){
   var query = connection.query('SELECT usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario from usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_usuario_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario Where usuario_problema.id_usuario_problema = ?', [id_usuario_problema], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var usuario_problema = result;
@@ -118,7 +118,7 @@ function getUsuarioProblema(req,res){
         res.status(200).json(usuario_problema);   
       }
       else{
-        res.status(200).send({Mensaje:'El Usuario Por tipo de problema no existe'});
+        res.status(200).send({Mensaje:'El Usuario Por tipo de problema no existe',Estatus:'Error'});
       }
     }
   });
@@ -134,16 +134,16 @@ function eliminarUsuarioProblema(req,res){
 
     if(error){
       //throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var resultado_verificacion = result.affectedRows;
             
       if(resultado_verificacion != 0){
-        res.status(200).send({Mensaje:'Usuario por Tipo de problema deshabilitado con exito'});  
+        res.status(200).send({Mensaje:'Usuario por Tipo de problema deshabilitado con exito',Estatus:'Ok'});  
       }
       else{
-        res.status(200).send({Mensaje:'El Usuario por Tipo de problema no existe'});
+        res.status(200).send({Mensaje:'El Usuario por Tipo de problema no existe',Estatus:'Error'});
       }
     }
   });

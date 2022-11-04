@@ -35,7 +35,7 @@ function guardarAlmacen(req,res){
     
         if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         
         var resultado_verificacion = result;
@@ -46,7 +46,7 @@ function guardarAlmacen(req,res){
           var query_verificar_sucursal = connection.query('SELECT id_sucursal FROM sucursal WHERE id_sucursal =?',[params.id_sucursal], function(error, result){
             if(error){
               //throw error;
-              res.status(200).send({Mensaje:'Error al verificar existencia'});
+              res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
             }else{
               
               var resultado_verificacion_sucursal = result;
@@ -58,7 +58,7 @@ function guardarAlmacen(req,res){
                     
                     if(error){
                         //throw error;
-                        res.status(200).send({Mensaje:'Error al verificar existencia'});
+                        res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
                       
                     }else{
                         
@@ -70,30 +70,30 @@ function guardarAlmacen(req,res){
                             [params.id_sucursal, params.id_codigo_articulo, params.cantidad_total, params.cantidad_disponible, params.tipo],function(error, result){
                                 if(error){
                                 // throw error;
-                                    res.status(200).send({Mensaje:'Error al registrar la Articulo'});
+                                    res.status(200).send({Mensaje:'Error al registrar la Articulo',Estatus:'Error'});
                                 }else{
-                                    res.status(200).send({Mensaje:'Articulo registrado con exito'});
+                                    res.status(200).send({Mensaje:'Articulo registrado con exito',Estatus:'Ok'});
                                 }
                             });
 
                         }else{
-                            res.status(200).send({Mensaje:'EL Codigo Articulo no existe o no esta registrado'});
+                            res.status(200).send({Mensaje:'EL Codigo Articulo no existe o no esta registrado',Estatus:'Error'});
                         }
                     }          
                 });                             
               }else{
-                  res.status(200).send({Mensaje:'La Sucursal no existe o no esta registrada'});
+                  res.status(200).send({Mensaje:'La Sucursal no existe o no esta registrada',Estatus:'Error'});
               }
             }
           });          
         }
         else{
-          res.status(200).send({Mensaje:'Producto ya registrado en esta sucursal anteriormente'});
+          res.status(200).send({Mensaje:'Producto ya registrado en esta sucursal anteriormente',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Pruducto'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Pruducto',Estatus:'Error'});
   }
 }
 
@@ -107,7 +107,7 @@ function modificarAlmacen(req,res){
     var query_verificar = connection.query('SELECT id_articulo FROM almacen WHERE id_articulo =?',[id_articulo], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Sucursal//
@@ -117,19 +117,19 @@ function modificarAlmacen(req,res){
             [params.cantidad_total, params.cantidad_disponible, params.tipo, id_articulo],function(error, result){
                 if(error){
                 //throw error;
-                res.status(200).send({Mensaje:'Error al modificar Almacen'});
+                res.status(200).send({Mensaje:'Error al modificar Almacen',Estatus:'Error'});
                 }else{
-                res.status(200).send({Mensaje:'Almacen modificado con exito'});
+                res.status(200).send({Mensaje:'Almacen modificado con exito',Estatus:'Ok'});
                 }
             });            
         }
         else{
-          res.status(200).send({Mensaje:'producto no registrado o no existe'});
+          res.status(200).send({Mensaje:'producto no registrado o no existe',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el almacen'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el almacen',Estatus:'Error'});
   }
 }
 
@@ -139,7 +139,7 @@ function getAlmacenes(req,res){
   var query = connection.query('SELECT almacen.id_articulo, almacen.id_sucursal ,sucursal.nombre_sucursal, almacen.id_codigo_articulo, codigo_articulo.nombre_articulo, cantidad_total, cantidad_disponible, tipo FROM almacen INNER JOIN sucursal on sucursal.id_sucursal = almacen.id_sucursal INNER JOIN codigo_articulo on codigo_articulo.id_codigo_articulo = almacen.id_codigo_articulo', [], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var almacenes = result;
@@ -148,7 +148,7 @@ function getAlmacenes(req,res){
         res.status(200).json(almacenes);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay productos en el almacen'});
+        res.status(200).send({Mensaje:'No hay productos en el almacen',Estatus:'Error'});
       }
     }
   });
@@ -161,14 +161,14 @@ function getAlmacen(req,res){
   var query = connection.query('SELECT almacen.id_articulo, almacen.id_sucursal ,sucursal.nombre_sucursal, almacen.id_codigo_articulo, codigo_articulo.nombre_articulo, cantidad_total, cantidad_disponible, tipo FROM almacen INNER JOIN sucursal on sucursal.id_sucursal = almacen.id_sucursal INNER JOIN codigo_articulo on codigo_articulo.id_codigo_articulo = almacen.id_codigo_articulo Where usuario_problema.id_usuario_problema =?', [id_almacen], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
       var almacen = result;            
       if(almacen.length != 0){
         //res.json(rows);
         res.status(200).json(almacen);   
       }else{
-        res.status(200).send({Mensaje:'El Producto no existe en el almacen'});
+        res.status(200).send({Mensaje:'El Producto no existe en el almacen',Estatus:'Error'});
       }
     }
   });

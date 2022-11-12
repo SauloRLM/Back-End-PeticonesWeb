@@ -6,6 +6,84 @@ connection.connect(function(error){
    console.log("No es posible establecer conexión con el servidor de base de datos. Verifique la conexión.")
  }
 });
+
+function login(req,res){
+  var params = req.body;
+  var user = params.usuario;  
+  var password = params.password;
+  var estatus = 'A';
+
+  //si el usuario es baja B
+  var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND Estatus = ?",[user,estatus],function(error, result){        
+    if(error){          
+      res.status(200).send({Mensaje:'Error al Consultar',Estatus:'Error'});
+    }else{
+      var resultado_B = result;
+      //verificar que el id del empleado exista y el id de la sucursal exista//        
+      if(resultado_B.length > 0){
+
+        var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND password= ? AND login = 0",[user,password],function(error, result){        
+  
+          if(error){    
+            // throw error;
+            res.status(200).send({Mensaje:'Error al Consultar',Estatus:'Error'});
+          }else{            
+            var resultado_verificacion = result;
+            if(resultado_verificacion.length > 0){              
+              var query = connection.query('UPDATE usuario SET login= 1 WHERE usuario = ? AND password = ?',
+              [user,password],function(error, result){
+                if(error){
+                //throw error;
+                  res.status(200).send({Mensaje:'Error al inisiar sesión',Estatus:'Error'});
+                }else{                  
+
+                  var query = connection.query('SELECT * FROM usuario WHERE usuario=? AND password=?', [user,password], function(error, result){
+                    if(error){
+                      // throw error;
+                      res.status(200).send({Mensaje:'Error en la solicitud',Estatus:'Error'});
+                    }else{
+                
+                      var usuario = result;                      
+                      if(usuario.length != 0){
+                        //res.json(rows);
+                        res.status(200).send({Mensaje:'Inicio de sesion Exitoso',Estatus:'Ok', usuario});                           
+                        console.log(usuario);
+                      }
+                      else{
+                        res.status(200).send({Mensaje:'En la carga de datos de inicio de sesion',Estatus:'Error'});
+                      }
+                    }
+                  });
+                }
+              });                                                                                                      
+            }else{
+              res.status(200).send({Mensaje:'El Usuario ya tiene sesión iniciada', Estatus:'Error'});  
+            }                        
+          }
+        });  
+      }else{
+        res.status(200).send({Mensaje:'El Usuario Esta Desahabilitado', Estatus:'Error'});  
+      }
+    }
+  });    
+}
+
+function logout(req,res){
+  var params = req.body;
+  var user = params.usuario;  
+  var password = params.password;  
+  //cierre de sesion
+  var query = connection.query('UPDATE usuario SET login= 0 WHERE usuario = ? AND password = ?',
+    [user,password],function(error, result){
+    if(error){
+      //throw error;
+      res.status(200).send({Mensaje:'Error al cerrar',Estatus:'Error'});
+      }else{                                    
+        res.status(200).send({Mensaje:'Cierre de sesion exitoso',Estatus:'Ok'});
+    }
+  });
+} 
+
 //acciones
 function guardarUsuario(req,res){
   //Recoger parametros peticion
@@ -213,9 +291,12 @@ function eliminarUsuario(req,res){
 
 
 module.exports={  
+    login,
+    logout,
     guardarUsuario,
     modificarUsuario,
     getUsuarios,
     getUsuario,
     eliminarUsuario,    
+    
 };

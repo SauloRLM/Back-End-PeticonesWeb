@@ -22,7 +22,6 @@ var almacen = require('./routes/almacen');
 var articulo_problema = require('./routes/articulo_problema');
 var problema = require('./routes/problema');
 var requisito_problema = require('./routes/requisito_problema');
-
 //middlewares de body-parser
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());

@@ -126,7 +126,7 @@ function getTipoProblema(req,res){
 
 function eliminarTipoProblema(req,res){
 
-  var id_tipo_problema = req.params.id_usuario;
+  var id_tipo_problema = req.params.id_tipo_problema;
   var estatus = 'B';
   var query = connection.query('UPDATE tipo_problema SET estatus = ? WHERE id_tipo_problema = ?',
   [estatus, id_tipo_problema],function(error, result){

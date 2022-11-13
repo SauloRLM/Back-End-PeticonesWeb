@@ -11,7 +11,7 @@ function guardarCodigoArticulo(req,res){
   //Recoger parametros peticion
   var params = req.body;
 
-  if(params.id_codigo_articulo && params.nombre_articulo && connection){
+  if(params.id_codigo_articulo && params.nombre_articulo && params.descripcion && connection){
 
     //verificar que no exista ese tipo de problema
     var query_verificar = connection.query('SELECT id_codigo_articulo FROM codigo_articulo WHERE id_codigo_articulo =?',[params.id_codigo_articulo], function(error, result){
@@ -24,8 +24,8 @@ function guardarCodigoArticulo(req,res){
         //verificar
         if(resultado_verificacion.length == 0){
 
-            var query = connection.query('INSERT INTO codigo_articulo(id_codigo_articulo, nombre_articulo) VALUES(?,?)',
-                [params.id_codigo_articulo, params.nombre_articulo],function(error, result){
+            var query = connection.query('INSERT INTO codigo_articulo(id_codigo_articulo, nombre_articulo, descripcion) VALUES(?,?,?)',
+                [params.id_codigo_articulo, params.nombre_articulo, params.descripcion],function(error, result){
                   if(error){
                       // throw error;
                       res.status(200).send({Mensaje:'Error Al registrar el Codigo y el Articulo',Estatus:'Error'});
@@ -58,8 +58,8 @@ function modificarCodigoArticulo(req,res){
         //Modificar Sucursal//
         if(resultado_verificacion.length != 0){
           
-            var query = connection.query('UPDATE codigo_articulo SET nombre_articulo= ?  WHERE id_codigo_articulo = ?',
-            [ params.nombre_articulo, id_codigo_articulo],function(error, result){
+            var query = connection.query('UPDATE codigo_articulo SET nombre_articulo= ?, descripcion=? WHERE id_codigo_articulo = ?',
+            [ params.nombre_articulo,params.descripcion ,id_codigo_articulo],function(error, result){
                 if(error){
                     //throw error;
                     res.status(200).send({Mensaje:'Error al modificar nombre del articulo',Estatus:'Error'});

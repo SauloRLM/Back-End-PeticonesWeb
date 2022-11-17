@@ -99,12 +99,12 @@ function guardarAlmacen(req,res){
 
 /**/
 function modificarAlmacen(req,res){
-  var id_articulo = req.params.id_articulo;
+  var id_almacen = req.params.id_almacen;
   var params = req.body;
 
   if(params.cantidad_total && params.cantidad_disponible && params.tipo && connection){
 
-    var query_verificar = connection.query('SELECT id_articulo FROM almacen WHERE id_articulo =?',[id_articulo], function(error, result){
+    var query_verificar = connection.query('SELECT id_almacen FROM almacen WHERE id_almacen =?',[id_almacen], function(error, result){
       if(error){
           //throw error;
           res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
@@ -113,8 +113,8 @@ function modificarAlmacen(req,res){
         //Modificar Sucursal//
         if(resultado_verificacion.length != 0){
 
-            var query = connection.query('UPDATE almacen SET cantidad_total =?, cantidad_disponible = ?, tipo = ? WHERE id_articulo = ?',
-            [params.cantidad_total, params.cantidad_disponible, params.tipo, id_articulo],function(error, result){
+            var query = connection.query('UPDATE almacen SET cantidad_total =?, cantidad_disponible = ?, tipo = ? WHERE id_almacen = ?',
+            [params.cantidad_total, params.cantidad_disponible, params.tipo, id_almacen],function(error, result){
                 if(error){
                 //throw error;
                 res.status(200).send({Mensaje:'Error al modificar Almacen',Estatus:'Error'});
@@ -136,7 +136,7 @@ function modificarAlmacen(req,res){
 
 //hacer inner join con sucursal y con producto 
 function getAlmacenes(req,res){
-  var query = connection.query('SELECT almacen.id_articulo, almacen.id_sucursal ,sucursal.nombre_sucursal, almacen.id_codigo_articulo, codigo_articulo.nombre_articulo, cantidad_total, cantidad_disponible, tipo FROM almacen INNER JOIN sucursal on sucursal.id_sucursal = almacen.id_sucursal INNER JOIN codigo_articulo on codigo_articulo.id_codigo_articulo = almacen.id_codigo_articulo', [], function(error, result){
+  var query = connection.query('SELECT almacen.id_almacen, almacen.id_sucursal ,sucursal.nombre_sucursal, almacen.id_codigo_articulo, codigo_articulo.nombre_articulo, cantidad_total, cantidad_disponible, tipo FROM almacen INNER JOIN sucursal on sucursal.id_sucursal = almacen.id_sucursal INNER JOIN codigo_articulo on codigo_articulo.id_codigo_articulo = almacen.id_codigo_articulo', [], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});

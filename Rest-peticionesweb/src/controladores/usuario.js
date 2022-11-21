@@ -22,40 +22,51 @@ function login(req,res){
       //verificar que el id del empleado exista y el id de la sucursal exista//        
       if(resultado_B.length > 0){
 
-        var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND password= ? AND login = 0",[user,password],function(error, result){        
+        var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND password= ? AND login < 5",[user,password],function(error, result){        
   
           if(error){    
             // throw error;
             res.status(200).send({Mensaje:'Error al Consultar',Estatus:'Error'});
           }else{            
             var resultado_verificacion = result;
-            if(resultado_verificacion.length > 0){              
-              var query = connection.query('UPDATE usuario SET login= 1 WHERE usuario = ? AND password = ?',
-              [user,password],function(error, result){
+            if(resultado_verificacion.length > 0){    
+                  
+              //nuevo para validar mas de una vez el inicio de sesion------ 5 veces como maximo
+              var query = connection.query('SELECT login FROM usuario WHERE usuario= ? AND password= ?', [user,password], function(error, result){
                 if(error){
-                //throw error;
-                  res.status(200).send({Mensaje:'Error al inisiar sesión',Estatus:'Error'});
-                }else{                  
-
-                  var query = connection.query('SELECT * FROM usuario WHERE usuario=? AND password=?', [user,password], function(error, result){
+                  // throw error;
+                  res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+                }else{
+            
+                  var numlogin = result[0].login + 1;
+                  //console.log(numlogin);                                    
+                  var query = connection.query('UPDATE usuario SET login= ? WHERE usuario = ? AND password = ?',
+                  [numlogin,user,password],function(error, result){
                     if(error){
-                      // throw error;
-                      res.status(200).send({Mensaje:'Error en la solicitud',Estatus:'Error'});
-                    }else{
-                
-                      var usuario = result;                      
-                      if(usuario.length != 0){
-                        //res.json(rows);
-                        res.status(200).send({Mensaje:'Inicio de sesion Exitoso',Estatus:'Ok', usuario});                           
-                        console.log(usuario);
-                      }
-                      else{
-                        res.status(200).send({Mensaje:'En la carga de datos de inicio de sesion',Estatus:'Error'});
-                      }
+                    //throw error;
+                      res.status(200).send({Mensaje:'Error al inisiar sesión',Estatus:'Error'});
+                    }else{                  
+                        var query = connection.query('SELECT * FROM usuario WHERE usuario=? AND password=?', [user,password], function(error, result){
+                          if(error){
+                            // throw error;
+                            res.status(200).send({Mensaje:'Error en la solicitud',Estatus:'Error'});
+                          }else{
+                      
+                            var usuario = result;                      
+                            if(usuario.length != 0){
+                              //res.json(rows);
+                              res.status(200).send({Mensaje:'Inicio de sesion Exitoso',Estatus:'Ok', usuario});                           
+                              //console.log(usuario);
+                            }
+                            else{
+                              res.status(200).send({Mensaje:'En la carga de datos de inicio de sesion',Estatus:'Error'});
+                            }
+                          }
+                        });
                     }
-                  });
+                  }); 
                 }
-              });                                                                                                      
+              });                                                                                                                                 
             }else{
               res.status(200).send({Mensaje:'El Usuario ya tiene sesión iniciada', Estatus:'Error'});  
             }                        

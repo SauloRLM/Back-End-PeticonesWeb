@@ -97,7 +97,9 @@ function ProblemaEstatus(req,res){
                 res.status(200).send({Mensaje:'Estatus del problema modificado con exito',Estatus:'Ok'});
               }
             });      
+
           }else if(params.estatus == 'REVISION'){
+
             var query = connection.query('UPDATE problema SET estatus=?, fecha_revision= ? WHERE id_problema = ?',
             [params.esatus, datetime, id_problema],function(error, result){
               if(error){
@@ -109,6 +111,7 @@ function ProblemaEstatus(req,res){
             });      
       
           }else if(params.estatus == 'PROCESO'){
+
             var query = connection.query('UPDATE problema SET estatus=?, fecha_enproceso = ? WHERE id_problema = ?',
             [params.esatus, datetime, id_problema],function(error, result){
               if(error){
@@ -119,6 +122,7 @@ function ProblemaEstatus(req,res){
               }
             });            
           }else if(params.estatus == 'TERMINADO'){
+
             var query = connection.query('UPDATE problema SET estatus=?, fecha_terminado = ? WHERE id_problema = ?',
             [params.esatus, datetime, id_problema],function(error, result){
               if(error){
@@ -130,6 +134,7 @@ function ProblemaEstatus(req,res){
             });      
       
           }else if(params.estatus == 'RECHAZADO'){
+
             var query = connection.query('UPDATE problema SET estatus=?, fecha_rechazado = ? WHERE id_problema = ?',
             [params.esatus, datetime, id_problema],function(error, result){
               if(error){
@@ -150,8 +155,27 @@ function ProblemaEstatus(req,res){
   }
 }
 
+function getProblemasEspera(req,res){
+ //res.status(200).send({Mensaje:'tabla de usuario designado creada con exito'});
+ var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, problema.estatus, fecha_solicitud, fecha_aceptado, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado;', [], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+    }else{
 
-function getProblemas(req,res){
+      var problemas = result;
+            
+      if(problemas.length != 0){
+        res.status(200).json(problemas);   
+      }
+      else{
+        res.status(200).send({Mensaje:'No hay problemas',Estatus:'Error'});
+      }
+    }
+  });
+}
+
+function getProblemasAsignados(req,res){
 
   var query_temporal = connection.query('CREATE TEMPORARY TABLE IF NOT EXISTS problema_usuario_designado AS (SELECT problema.id_usuario_designado, empleado.nombre_empleado FROM problema INNER JOIN usuario ON usuario.id_usuario = problema.id_usuario_designado INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado)', [], function(error, result){
     if(error){
@@ -214,8 +238,9 @@ function getProblema(req,res){
 
 module.exports={  
     guardarProblema,
-    modificarProblema,
-    getProblemas,
+    modificarProblema,    
+    getProblemasEspera,
+    getProblemasAsignados,
     getProblema,
     ProblemaEstatus,
 };

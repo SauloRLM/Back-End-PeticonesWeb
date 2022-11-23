@@ -15,6 +15,8 @@ function guardarUsuarioProblema(req,res){
 
   if(params.id_tipo_problema && params.id_usuario && params.estatus && connection){
 
+    
+    
     //verificar que no exista ese usuario por tipo de problema
     var query_verificar = connection.query('SELECT id_usuario_problema FROM usuario_problema WHERE id_tipo_problema =? AND id_usuario =? ',[params.id_tipo_problema, params.id_usuario], function(error, result){
 
@@ -27,15 +29,30 @@ function guardarUsuarioProblema(req,res){
         //verificar
         if(resultado_verificacion.length == 0){
 
-            var query = connection.query('INSERT INTO usuario_problema(id_tipo_problema, id_usuario, estatus) VALUES(?,?,?)',
-                            [params.id_tipo_problema, params.id_usuario, params.estatus],function(error, result){
-                                if(error){
-                                // throw error;
-                                    res.status(200).send({Mensaje:'Error al registrar al usuario y a su tipo problema a resolver',Estatus:'Error'});
-                                }else{
-                                    res.status(200).send({Mensaje:'Solucionador y tipo de Problema registrado con exito',Estatus:'Ok'});
-                                }
-            });             
+
+          //verificar que el usuario exista y que sea solver 4
+          var query_verificar_user = connection.query('SELECT * FROM usuario WHERE usuario =? AND id_rol = 4 OR id_rol = 1 ',[params.id_usuario], function(error, result){
+            if(error){
+              //throw error;
+              res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
+           }else{
+            var resultado_verificacion_user = result;
+            //verificar
+            if(resultado_verificacion_user.length > 0){
+              var query = connection.query('INSERT INTO usuario_problema(id_tipo_problema, id_usuario, estatus) VALUES(?,?,?)',
+              [params.id_tipo_problema, params.id_usuario, params.estatus],function(error, result){
+                if(error){
+                  // throw error;
+                  res.status(200).send({Mensaje:'Error al registrar al usuario y a su tipo problema a resolver',Estatus:'Error'});
+                }else{
+                  res.status(200).send({Mensaje:'Solucionador y tipo de Problema registrado con exito',Estatus:'Ok'});
+                }
+              });             
+            }else{
+              res.status(200).send({Mensaje:'Error el Usuario no existe ó no cumple con rol Solucionador',Estatus:'Error'});
+            }
+           }
+          });            
         }else{
           res.status(200).send({Mensaje:'El Solucionador  ya esta registrado en el sistema',Estatus:'Error'});
         }
@@ -50,6 +67,8 @@ function guardarUsuarioProblema(req,res){
 function modificarUsuarioProblema(req,res){
   var id_usuario_problema = req.params.id_usuario_problema;  
   var params = req.body;
+
+  //console.log(params);
 
   if(params.id_tipo_problema && params.id_usuario && params.estatus && connection){
 
@@ -84,7 +103,7 @@ function modificarUsuarioProblema(req,res){
 
 
 function getUsuariosProblemas(req,res){
-  var query = connection.query('SELECT  usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario, usuario_problema.estatus FROM usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_usuario_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario', [], function(error, result){
+  var query = connection.query('SELECT usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario,usuario.id_empleado, empleado.nombre_empleado, usuario_problema.estatus FROM usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_usuario_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado', [], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});

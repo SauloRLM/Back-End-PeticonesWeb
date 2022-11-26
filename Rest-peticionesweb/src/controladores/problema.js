@@ -12,10 +12,22 @@ connection.connect(function(error){
 function guardarProblema(req,res){
   //Recoger parametros peticion
   var params = req.body;
-  if(params.id_tipo_problema && params.descripcion_problema && params.id_usuario && params.estatus && params.fecha_solicitud  && connection){    
+
+  //calculo de hora y fecha
+  let date = new Date();
+  var fecha =date.toISOString().split('T')[0];
+  //console.log(fecha);
+  var hora = date.toLocaleTimeString('en-US').split(' ')[0];
+  //console.log(hora);
+  var datetime = fecha+' '+ hora;
+  //console.log(datetime);
+
+  //&& params.fecha_solicitud
+
+  if(params.id_tipo_problema && params.descripcion_problema && params.id_usuario && params.estatus && datetime && connection){    
 
     var query = connection.query('INSERT INTO problema(id_tipo_problema, descripcion_problema, id_usuario,  estatus, fecha_solicitud) VALUES(?,?,?,?,?)',
-    [params.id_tipo_problema, params.descripcion_problema , params.id_usuario , params.estatus , params.fecha_solicitud ],function(error, result){
+    [params.id_tipo_problema, params.descripcion_problema , params.id_usuario , params.estatus , datetime ],function(error, result){
      if(error){
         // throw error;
         res.status(200).send({Mensaje:'Error al registrar problema',Estatus:'Error'});
@@ -176,7 +188,7 @@ function getProblemas(req,res){
               res.status(200).send({Mensaje:'Error al Cargar datos a la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
             }else{              
 
-              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, fecha_solicitud, fecha_aceptado, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema;', [], function(error, result){
+              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, fecha_solicitud, fecha_aceptado, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema;', [], function(error, result){
                 if(error){
                   // throw error;
                   res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});

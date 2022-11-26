@@ -73,7 +73,7 @@ function login(req,res){
           }
         });  
       }else{
-        res.status(200).send({Mensaje:'El Usuario Esta Desahabilitado', Estatus:'Error'});  
+        res.status(200).send({Mensaje:'El usuario no existe o esta desahabilitado', Estatus:'Error'});  
       }
     }
   });    

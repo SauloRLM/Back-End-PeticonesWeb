@@ -187,15 +187,14 @@ function getProblemas(req,res){
               // throw error;
               res.status(200).send({Mensaje:'Error al Cargar datos a la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
             }else{              
-
-              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, fecha_solicitud, fecha_aceptado, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema;', [], function(error, result){
+              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema;', [], function(error, result){
                 if(error){
                   // throw error;
                   res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
                 }else{
             
                   var problemas = result;
-                        
+                  //console.log(problemas);
                   if(problemas.length != 0){
                     res.status(200).json(problemas);   
                   }
@@ -214,32 +213,58 @@ function getProblemas(req,res){
 }
 
 
-function getProblema(req,res){
-  var id_problema = req.params.id_problema;
-
-  var query_temporal = connection.query('CREATE TEMPORARY TABLE IF NOT EXISTS problema_usuario_designado AS (SELECT problema.id_usuario_designado, empleado.nombre_empleado FROM problema INNER JOIN usuario ON usuario.id_usuario = problema.id_usuario_designado INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado)', [], function(error, result){
-    if(error){
-      // throw error;
-      res.status(200).send({Mensaje:'Error en la creacion de la tabla usuario designado',Estatus:'Error'});
-    }else{
-      //res.status(200).send({Mensaje:'tabla de usuario designado creada con exito'});
-      var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema,problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, problema_usuario_designado.nombre_empleado, problema.id_usuario_designado, problema.estatus, fecha_solicitud, fecha_aceptado, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN  problema_usuario_designado ON problema.id_usuario_designado = problema_usuario_designado.id_usuario_designado WHERE id_problema=?', [id_problema], function(error, result){
+//
+/*
+var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema,problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, problema_usuario_designado.nombre_empleado, problema.id_usuario_designado, problema.estatus, fecha_solicitud, fecha_aceptado, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN  problema_usuario_designado ON problema.id_usuario_designado = problema_usuario_designado.id_usuario_designado WHERE id_problema=?', [id_problema], function(error, result){
         if(error){
           // throw error;
           res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
         }else{
     
-          var problema = result;
-                
-          if(problema.length != 0){
-            //res.json(rows);
-            res.status(200).json(problema);   
-          }
-          else{
-            res.status(200).send({Mensaje:'El problema no existe',Estatus:'Error'});
-          }
+          
         }
       });
+*/
+function getProblema(req,res){
+  var id_problema = req.params.id_problema;
+  var query_drop_temporal = connection.query('DROP TABLE IF EXISTS problema_usuario_designado', [], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error al eliminar la tabla Usuario Designado Por Problema ',Estatus:'Error'});
+    }else{
+
+      var query_temporal = connection.query('CREATE TEMPORARY TABLE IF NOT EXISTS problema_usuario_designado (id_problema int, id_usuario_designado int NULL DEFAULT NULL, nombre_empleado_designado varchar(150) NULL DEFAULT NULL)', [], function(error, result){
+        if(error){
+          // throw error;
+          res.status(200).send({Mensaje:'Error al eliminar Crear la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
+        }else{
+
+          var query_upload_data = connection.query('INSERT INTO problema_usuario_designado (id_problema, id_usuario_designado, nombre_empleado_designado) SELECT id_problema, id_usuario_designado,(SELECT emp.nombre_empleado FROM empleado AS emp WHERE (emp.id_empleado = problema.id_usuario_designado)) as nombre_empleado_designado FROM problema;', [], function(error, result){
+            if(error){
+              // throw error;
+              res.status(200).send({Mensaje:'Error al Cargar datos a la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
+            }else{              
+              
+              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema WHERE id_problema=?', [], function(error, result){
+                if(error){
+                  // throw error;
+                  res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+                }else{            
+                  var problema = result;                
+                  if(problema.length != 0){
+                    //res.json(rows);
+                    res.status(200).json(problema);   
+                  }
+                  else{
+                    res.status(200).send({Mensaje:'El problema no existe',Estatus:'Error'});
+                  }
+                }
+              });
+
+            }
+          });
+        }
+      });      
     }
   });  
 }

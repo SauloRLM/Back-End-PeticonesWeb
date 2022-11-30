@@ -113,7 +113,7 @@ function ProblemaEstatus(req,res){
           }else if(params.estatus == 'REVISION'){
 
             var query = connection.query('UPDATE problema SET estatus=?, fecha_revision= ? WHERE id_problema = ?',
-            [params.esatus, datetime, id_problema],function(error, result){
+            [params.estatus, datetime, id_problema],function(error, result){
               if(error){
                 //throw error;
                 res.status(200).send({Mensaje:'Error al modificar el estatus del problema',Estatus:'Error'});
@@ -125,7 +125,7 @@ function ProblemaEstatus(req,res){
           }else if(params.estatus == 'PROCESO'){
 
             var query = connection.query('UPDATE problema SET estatus=?, fecha_enproceso = ? WHERE id_problema = ?',
-            [params.esatus, datetime, id_problema],function(error, result){
+            [params.estatus, datetime, id_problema],function(error, result){
               if(error){
                 //throw error;
                 res.status(200).send({Mensaje:'Error al modificar el estatus del problema',Estatus:'Error'});
@@ -136,7 +136,7 @@ function ProblemaEstatus(req,res){
           }else if(params.estatus == 'TERMINADO'){
 
             var query = connection.query('UPDATE problema SET estatus=?, fecha_terminado = ? WHERE id_problema = ?',
-            [params.esatus, datetime, id_problema],function(error, result){
+            [params.params.estatus, datetime, id_problema],function(error, result){
               if(error){
                 //throw error;
                 res.status(200).send({Mensaje:'Error al modificar el estatus del problema',Estatus:'Error'});
@@ -145,10 +145,9 @@ function ProblemaEstatus(req,res){
               }
             });      
       
-          }else if(params.estatus == 'RECHAZADO'){
-
+          }else if(params.estatus == "RECHAZADO"){            
             var query = connection.query('UPDATE problema SET estatus=?, fecha_rechazado = ? WHERE id_problema = ?',
-            [params.esatus, datetime, id_problema],function(error, result){
+            [params.estatus, datetime, id_problema],function(error, result){
               if(error){
                 //throw error;
                 res.status(200).send({Mensaje:'Error al modificar el estatus del problema',Estatus:'Error'});
@@ -213,18 +212,7 @@ function getProblemas(req,res){
 }
 
 
-//
-/*
-var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema,problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, problema_usuario_designado.nombre_empleado, problema.id_usuario_designado, problema.estatus, fecha_solicitud, fecha_aceptado, fecha_revision, fecha_enproceso, fecha_terminado, fecha_rechazado  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN  problema_usuario_designado ON problema.id_usuario_designado = problema_usuario_designado.id_usuario_designado WHERE id_problema=?', [id_problema], function(error, result){
-        if(error){
-          // throw error;
-          res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
-        }else{
-    
-          
-        }
-      });
-*/
+
 function getProblema(req,res){
   var id_problema = req.params.id_problema;
   var query_drop_temporal = connection.query('DROP TABLE IF EXISTS problema_usuario_designado', [], function(error, result){

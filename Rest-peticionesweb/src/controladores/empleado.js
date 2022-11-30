@@ -141,7 +141,6 @@ function getEmpleados(req,res){
 
 function getEmpleado(req,res){
   var id_empleado = req.params.id_empleado;
-
   var query = connection.query('SELECT * FROM empleado WHERE id_empleado=?', [id_empleado], function(error, result){
     if(error){
       // throw error;

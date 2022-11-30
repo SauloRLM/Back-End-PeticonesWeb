@@ -103,7 +103,7 @@ function modificarUsuarioProblema(req,res){
 
 
 function getUsuariosProblemas(req,res){
-  var query = connection.query('SELECT usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario,usuario.id_empleado, empleado.nombre_empleado, usuario_problema.estatus FROM usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_usuario_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado', [], function(error, result){
+  var query = connection.query('SELECT usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario,usuario.id_empleado, empleado.nombre_empleado, usuario_problema.estatus FROM usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_tipo_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado order by id_usuario_problema', [], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
@@ -124,7 +124,7 @@ function getUsuariosProblemas(req,res){
 
 function getUsuarioProblema(req,res){
   var id_usuario_problema = req.params.id_usuario_problema;
-  var query = connection.query('SELECT usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario from usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_usuario_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario Where usuario_problema.id_usuario_problema = ?', [id_usuario_problema], function(error, result){
+  var query = connection.query('SELECT usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario,usuario.id_empleado, empleado.nombre_empleado, usuario_problema.estatus FROM usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_tipo_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado Where usuario_problema.id_usuario_problema = ?', [id_usuario_problema], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});

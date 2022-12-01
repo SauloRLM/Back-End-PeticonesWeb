@@ -122,17 +122,34 @@ function ProblemaEstatus(req,res){
               }
             });      
       
-          }else if(params.estatus == 'PROCESO'){
-
+          }else if(params.estatus == 'PROCESO'){            
+            var banderaError = 'a'
             var query = connection.query('UPDATE problema SET estatus=?, fecha_enproceso = ? WHERE id_problema = ?',
             [params.estatus, datetime, id_problema],function(error, result){
               if(error){
                 //throw error;
                 res.status(200).send({Mensaje:'Error al modificar el estatus del problema',Estatus:'Error'});
-              }else{
-                res.status(200).send({Mensaje:'Estatus del problema modificado con exito',Estatus:'Ok'});
+              }else{                
+                //materiales va a estar compuesto por dos campos cantidad a restar y el codigo del articulo 
+                params.materials.array.forEach(element => {              
+                  var codigo = elemnt.codigo;
+                  var cantidad = elemt.cantidad;                  
+                  var query_almacen = connection.query('UPDATE Almacen SET cantidad_disponible = (cantidad_disponible - ?) WHERE id_sucursal = "16" and id_codigo_articulo = ?;',
+                  [codigo, cantidad ],function(error, result){
+                    if(error){
+                      //throw error;
+                      banderaError = 'b';
+                    }
+                  });                                            
+                });                                      
+                if(banderaError == 'b'){
+                  res.status(200).send({Mensaje:'Error al asignar materiales al requisito del problema',Estatus:'Error'});
+                }else{
+                  res.status(200).send({Mensaje:'Estatus del problema modificado con exito',Estatus:'Ok'});                                
+                }                
               }
             });            
+
           }else if(params.estatus == 'TERMINADO'){
 
             var query = connection.query('UPDATE problema SET estatus=?, fecha_terminado = ? WHERE id_problema = ?',
@@ -233,7 +250,7 @@ function getProblema(req,res){
               res.status(200).send({Mensaje:'Error al Cargar datos a la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
             }else{              
               
-              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema WHERE id_problema=?', [], function(error, result){
+              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema WHERE fecha_solicitud=?', [id_problema], function(error, result){
                 if(error){
                   // throw error;
                   res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});

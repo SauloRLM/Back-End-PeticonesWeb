@@ -121,10 +121,9 @@ function getUsuariosProblemas(req,res){
   });
 }
 
-
 function getUsuarioProblema(req,res){
   var id_usuario_problema = req.params.id_usuario_problema;
-  var query = connection.query('SELECT usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario,usuario.id_empleado, empleado.nombre_empleado, usuario_problema.estatus FROM usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_tipo_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado Where usuario_problema.id_usuario_problema = ?', [id_usuario_problema], function(error, result){
+  var query = connection.query('SELECT usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario,usuario.id_empleado, empleado.nombre_empleado, usuario_problema.estatus FROM usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_tipo_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado Where usuario.estatus = "A" and empleado.estatus = "A" and usuario_problema.id_usuario_problema = ?', [id_usuario_problema], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
@@ -142,6 +141,30 @@ function getUsuarioProblema(req,res){
     }
   });
 }
+
+
+//para obtener usuarios por tipo de problema
+function getUsuarioTipoProblema(req,res){
+  var id_tipo_problema = req.params.id_tipo_problema;
+  var query = connection.query('SELECT usuario_problema.id_usuario_problema, usuario_problema.id_tipo_problema ,tipo_problema.tipo_problema, usuario_problema.id_usuario, usuario.usuario,usuario.id_empleado, empleado.nombre_empleado, usuario_problema.estatus FROM usuario_problema INNER JOIN tipo_problema ON tipo_problema.id_tipo_problema = usuario_problema.id_tipo_problema INNER JOIN usuario ON usuario.id_usuario = usuario_problema.id_usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado Where usuario.estatus = "A" and empleado.estatus = "A" and usuario_problema.id_tipo_problema = ?', [id_tipo_problema], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+    }else{
+
+      var usuario_problema = result;
+            
+      if(usuario_problema.length != 0){
+        //res.json(rows);
+        res.status(200).json(usuario_problema);   
+      }
+      else{
+        res.status(200).send({Mensaje:'El Usuario Por tipo de problema no existe',Estatus:'Error'});
+      }
+    }
+  });
+}
+
 
 
 function eliminarUsuarioProblema(req,res){
@@ -174,5 +197,6 @@ module.exports={
     modificarUsuarioProblema,
     getUsuariosProblemas,
     getUsuarioProblema,
+    getUsuarioTipoProblema,
     eliminarUsuarioProblema,    
 };

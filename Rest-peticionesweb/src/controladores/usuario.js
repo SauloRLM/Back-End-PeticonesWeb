@@ -68,7 +68,7 @@ function login(req,res){
                 }
               });                                                                                                                                 
             }else{
-              res.status(200).send({Mensaje:'El Usuario ya tiene sesión iniciada', Estatus:'Error'});  
+              res.status(200).send({Mensaje:'Usuario con sesión iniciada o datos incorrectos verifique!!', Estatus:'Error'});  
             }                        
           }
         });  

@@ -75,7 +75,7 @@ function modificarEmpleado(req,res){
     var query_verificar = connection.query('SELECT id_empleado FROM empleado WHERE id_empleado =?',[id_empleado], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error al verificar existencia de empleado',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Sucursal//
@@ -97,7 +97,7 @@ function modificarEmpleado(req,res){
                     //throw error;
                       res.status(200).send({Mensaje:'Error al modificar Empleado',Estatus:'Error'});
                     }else{
-                    res.status(200).send({Mensaje:'Empleado modificada con exito',Estatus:'Ok'});
+                    res.status(200).send({Mensaje:'Empleado modificado con exito',Estatus:'Ok'});
                     }
                   });
           

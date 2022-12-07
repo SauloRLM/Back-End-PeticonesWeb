@@ -136,8 +136,8 @@ function guardarUsuario(req,res){
 
                         if(resultado_verificacion_rol.length != 0){
                             
-                            var query = connection.query('INSERT INTO usuario(id_empleado, id_rol, usuario, password, estatus) VALUES(?,?,?,?,?)',
-                            [params.id_empleado, params.id_rol, params.usuario, params.password, params.estatus],function(error, result){
+                            var query = connection.query('INSERT INTO usuario(id_empleado, id_rol, usuario, password, estatus, login) VALUES(?,?,?,?,?,?)',
+                            [params.id_empleado, params.id_rol, params.usuario, params.password, params.estatus,0],function(error, result){
                                 if(error){
                                 // throw error;
                                     res.status(200).send({Mensaje:'Error al registrar el Usuario',Estatus:'Error'});

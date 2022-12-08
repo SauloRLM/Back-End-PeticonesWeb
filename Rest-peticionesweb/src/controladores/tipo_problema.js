@@ -35,12 +35,12 @@ function guardarTipoProblema(req,res){
                                 }
             });             
         }else{
-          res.status(200).send({Mensaje:'Tipo de problema ya registrado en el sistema',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. Tipo de problema ya registrado en el sistema',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el tipo de problema',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder registrar el tipo de problema',Estatus:'Error'});
   }
 }
 
@@ -71,12 +71,12 @@ function modificarTipoProblema(req,res){
             });                                                                           
         }
         else{
-          res.status(200).send({Mensaje:'El Tipo Problema no existe',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. El Tipo Problema no existe',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Tipo Problema',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder modificar el tipo problema.',Estatus:'Error'});
   }
 }
 
@@ -94,7 +94,7 @@ function getTiposProblemas(req,res){
         res.status(200).json(tipos_problemas);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Tipo de Problema',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. No hay tipo de problema',Estatus:'Error'});
       }
     }
   });
@@ -117,7 +117,7 @@ function getTipoProblema(req,res){
         res.status(200).json(tipo_problema);   
       }
       else{
-        res.status(200).send({Mensaje:'El tipo de problema no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El tipo de problema no existe.',Estatus:'Error'});
       }
     }
   });
@@ -142,7 +142,7 @@ function eliminarTipoProblema(req,res){
         res.status(200).send({Mensaje:'Tipo de problema deshabilitado con exito',Estatus:'Ok'});  
       }
       else{
-        res.status(200).send({Mensaje:'El Tipo de problema no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El Tipo de problema no existe.',Estatus:'Error'});
       }
     }
   });

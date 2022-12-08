@@ -28,19 +28,19 @@ function guardarArticuloProblema(req,res){
           var query = connection.query('INSERT INTO articulo_problema(id_codigo_articulo,id_tipo_problema ) VALUES(?,?)',
             [params.id_codigo_articulo, params.id_tipo_problema],function(error, result){
               if(error){
-                res.status(200).send({Mensaje:'Error al registrar la Articulo al Tipo de Problema',Estatus:'Error'});
+                res.status(200).send({Mensaje:'Error. Al registrar la articulo al tipo de problema.',Estatus:'Error'});
               }else{
                 res.status(200).send({Mensaje:'Articulo registrado con exito al Tipo de Problema', Estatus:'Ok'});
               }
           });
         }
         else{
-          res.status(200).send({Mensaje:'Articulo ya registrado a este tipo de problema anteriormente',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. Articulo ya registrado a este tipo de problema anteriormente.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Articulo al Tipo de Problema',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder registrar el Articulo al tipo de problema.',Estatus:'Error'});
   }
 }
 
@@ -63,19 +63,19 @@ function modificarArticuloProblema(req,res){
           [params.id_codigo_articulo, params.id_tipo_problema, id_articulo_problema],function(error, result){
               if(error){
               //throw error;
-              res.status(200).send({Mensaje:'Error al modificar Articulo por Tipo de Problema',Estatus:'Error'});
+              res.status(200).send({Mensaje:'Error. Al modificar Articulo por tipo de problema.',Estatus:'Error'});
               }else{
               res.status(200).send({Mensaje:'Articulo por Tipo de problema modificado con exito',Estatus:'Ok'});
               }
           });            
         }
         else{
-          res.status(200).send({Mensaje:'Articulo por Tipo de problema no registrado o no existe',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. Articulo por Tipo de problema no registrado o no existe.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Articulo por tipo de producto',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder modificar el articulo por tipo de producto.',Estatus:'Error'});
   }
 }
 
@@ -94,7 +94,7 @@ function getArticulosProblemas(req,res){
         res.status(200).json(articulosproblemas);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Articulos por tipos de problema',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. No hay articulos por tipos de problema.',Estatus:'Error'});
       }
     }
   });
@@ -114,7 +114,7 @@ function getArticuloProblema(req,res){
         //res.json(rows);
         res.status(200).json(articuloproblema);   
       }else{
-        res.status(200).send({Mensaje:'El Articulo por Tipo de Problema no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El articulo por tipo de problema no existe.',Estatus:'Error'});
       }
     }
   });

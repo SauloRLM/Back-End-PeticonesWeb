@@ -36,7 +36,7 @@ function guardarProblema(req,res){
      }
    });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el problema',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder registrar el problema.',Estatus:'Error'});
   }
 }
 
@@ -64,12 +64,12 @@ function modificarProblema(req,res){
           });
         }
         else{
-          res.status(200).send({Mensaje:'El problema no existe',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. El problema no existe.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el problema',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder modificar el problema.',Estatus:'Error'});
   }
 }
  
@@ -232,7 +232,7 @@ function ProblemaEstatus(req,res){
             });      
           }
         }else{
-          res.status(200).send({Mensaje:'El problema no existe',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. El problema no existe.',Estatus:'Error'});
         }        
       }
     });
@@ -273,7 +273,7 @@ function getProblemas(req,res){
                     res.status(200).json(problemas);   
                   }
                   else{
-                    res.status(200).send({Mensaje:'No hay problemas',Estatus:'Error'});
+                    res.status(200).send({Mensaje:'Error. No hay problemas.',Estatus:'Error'});
                   }
                 }
               });
@@ -319,7 +319,7 @@ function getProblema(req,res){
                     res.status(200).json(problema);   
                   }
                   else{
-                    res.status(200).send({Mensaje:'El problema no existe',Estatus:'Error'});
+                    res.status(200).send({Mensaje:'Error. El problema no existe.',Estatus:'Error'});
                   }
                 }
               });
@@ -363,7 +363,7 @@ function getProblemasOrder(req,res){
                     res.status(200).json(problemas);   
                   }
                   else{
-                    res.status(200).send({Mensaje:'No hay problemas',Estatus:'Error'});
+                    res.status(200).send({Mensaje:'Error. No hay problemas.',Estatus:'Error'});
                   }
                 }
               });

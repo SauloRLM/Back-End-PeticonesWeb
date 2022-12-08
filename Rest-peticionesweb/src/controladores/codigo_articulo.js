@@ -28,18 +28,18 @@ function guardarCodigoArticulo(req,res){
                 [params.id_codigo_articulo, params.nombre_articulo, params.descripcion],function(error, result){
                   if(error){
                       // throw error;
-                      res.status(200).send({Mensaje:'Error Al registrar el Codigo y el Articulo',Estatus:'Error'});
+                      res.status(200).send({Mensaje:'Error al registrar el codigo y el articulo',Estatus:'Error'});
                     }else{
                       res.status(200).send({Mensaje:'Codigo y Articulo registrado con exito',Estatus:'Ok'});
                     }
             });             
         }else{
-          res.status(200).send({Mensaje:'Codigo de ariculo ya registrado en el sistema',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. codigo de ariculo ya registrado en el sistema.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Codigo y el Articulo',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder registrar el codigo y el articulo.',Estatus:'Error'});
   }
 }
 
@@ -69,12 +69,12 @@ function modificarCodigoArticulo(req,res){
             });                                                                           
         }
         else{
-          res.status(200).send({Mensaje:'El codigo del articulo no existe',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. El codigo del articulo no existe.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el nombre del articulo',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder modificar el nombre del articulo.',Estatus:'Error'});
   }
 }
 
@@ -92,7 +92,7 @@ function getCodigosArticulos(req,res){
         res.status(200).json(codigos_articulos);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Codigos de Articulos',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. No hay codigos de articulos.',Estatus:'Error'});
       }
     }
   });
@@ -115,7 +115,7 @@ function getCodigoArticulo(req,res){
         res.status(200).json(codigo_articulo);   
       }
       else{
-        res.status(200).send({Mensaje:'El Codigo Articulo no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El codigo articulo no existe',Estatus:'Error'});
       }
     }
   });

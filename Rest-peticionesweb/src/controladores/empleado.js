@@ -102,18 +102,18 @@ function modificarEmpleado(req,res){
                   });
           
                 }else{
-                    res.status(200).send({Mensaje:'La Sucursal no existe o no esta registrada', Estatus:'Error'});
+                    res.status(200).send({Mensaje:'Error. La sucursal no existe o no esta registrada', Estatus:'Error'});
                 }  
               }  
             });             
         }
         else{
-          res.status(200).send({Mensaje:'Empleado no existe',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. Empleado no existe',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Empleado',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder modificar el empleado.',Estatus:'Error'});
   }
 }
 
@@ -132,7 +132,7 @@ function getEmpleados(req,res){
         res.status(200).json(sucursales);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Empleados',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. No hay empleados.',Estatus:'Error'});
       }
     }
   });
@@ -154,7 +154,7 @@ function getEmpleado(req,res){
         res.status(200).json(empleado);   
       }
       else{
-        res.status(200).send({Mensaje:'El Empleado no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El Empleado no existe.',Estatus:'Error'});
       }
     }
   });
@@ -179,7 +179,7 @@ function eliminarEmpleado(req,res){
         res.status(200).send({Mensaje:'Empleado deshabilitado con exito',Estatus:'Ok'});  
       }
       else{
-        res.status(200).send({Mensaje:'El Empleado no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El Empleado no existe',Estatus:'Error'});
       }
     }
   });

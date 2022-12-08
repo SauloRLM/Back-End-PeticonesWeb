@@ -59,7 +59,7 @@ function login(req,res){
                               //console.log(usuario);
                             }
                             else{
-                              res.status(200).send({Mensaje:'En la carga de datos de inicio de sesion',Estatus:'Error'});
+                              res.status(200).send({Mensaje:'Error. En la carga de datos de inicio de sesion.',Estatus:'Error'});
                             }
                           }
                         });
@@ -68,12 +68,12 @@ function login(req,res){
                 }
               });                                                                                                                                 
             }else{
-              res.status(200).send({Mensaje:'Usuario con sesión iniciada o datos incorrectos verifique!!', Estatus:'Error'});  
+              res.status(200).send({Mensaje:'Error. Usuario con sesión iniciada o datos incorrectos verifique!!.', Estatus:'Error'});  
             }                        
           }
         });  
       }else{
-        res.status(200).send({Mensaje:'El usuario no existe o esta desahabilitado', Estatus:'Error'});  
+        res.status(200).send({Mensaje:'Error. El usuario no existe o esta desahabilitado.', Estatus:'Error'});  
       }
     }
   });    
@@ -135,9 +135,9 @@ function guardarUsuario(req,res){
                     var resultado_verificacion_rol = result;
 
                         if(resultado_verificacion_rol.length != 0){
-                            
-                            var query = connection.query('INSERT INTO usuario(id_empleado, id_rol, usuario, password, estatus) VALUES(?,?,?,?,?)',
-                            [params.id_empleado, params.id_rol, params.usuario, params.password, params.estatus],function(error, result){
+                                                    
+                            var query = connection.query('INSERT INTO usuario(id_empleado, id_rol, usuario, password, estatus, login) VALUES(?,?,?,?,?,?)',
+                            [params.id_empleado, params.id_rol, params.usuario, params.password, params.estatus, 0],function(error, result){
                                 if(error){
                                 // throw error;
                                     res.status(200).send({Mensaje:'Error al registrar el Usuario',Estatus:'Error'});
@@ -147,7 +147,7 @@ function guardarUsuario(req,res){
                             });
 
                         }else{
-                            res.status(200).send({Mensaje:'El Rol no existe o no esta registrado',Estatus:'Error'});
+                            res.status(200).send({Mensaje:'Error. El Rol no existe o no esta registrado.',Estatus:'Error'});
                         }
                     }
                 });
@@ -158,12 +158,12 @@ function guardarUsuario(req,res){
           });
           
         }else{
-          res.status(200).send({Mensaje:'Usuario ya registrado en el sistema',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. Usuario ya esta en uso.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Usuario',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder registrar el usuario.',Estatus:'Error'});
   }
 }
 
@@ -201,7 +201,7 @@ function modificarUsuario(req,res){
                      }else{
                       var resultado_verificacion_nuevousuario = result;
                       if(resultado_verificacion_nuevousuario.length != 0){                   
-                        res.status(200).send({Mensaje:'Error el usuario ya esta en uso',Estatus:'Error'});
+                        res.status(200).send({Mensaje:'Error. El usuario ya esta en uso.',Estatus:'Error'});
                       }else{
                         var query = connection.query('UPDATE usuario SET id_rol =?, usuario =?, password =?, estatus=?  WHERE id_usuario = ?',
                         [params.id_rol, params.usuario, params.password, params.estatus, id_usuario],function(error, result){
@@ -216,18 +216,18 @@ function modificarUsuario(req,res){
                      }
                     });                  
                   }else{
-                    res.status(200).send({Mensaje:'El Rol no existe',Estatus:'Error'});
+                    res.status(200).send({Mensaje:'Error. El Rol no existe.',Estatus:'Error'});
                   }
                  }
               });          
         }
         else{
-          res.status(200).send({Mensaje:'El Usuario no existe',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. El Usuario no existe.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el usuario',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder modificar el usuario.',Estatus:'Error'});
   }
 }
 
@@ -246,7 +246,7 @@ function getUsuarios(req,res){
         res.status(200).json(usuarios);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Usuarios',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. No hay usuarios.',Estatus:'Error'});
       }
     }
   });
@@ -269,7 +269,7 @@ function getUsuario(req,res){
         res.status(200).json(usuario);   
       }
       else{
-        res.status(200).send({Mensaje:'El Usuario no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El Usuario no existe',Estatus:'Error'});
       }
     }
   });
@@ -294,7 +294,7 @@ function eliminarUsuario(req,res){
         res.status(200).send({Mensaje:'Usuario deshabilitada con exito',Estatus:'Ok'});  
       }
       else{
-        res.status(200).send({Mensaje:'El Usuario no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El Usuario no existe.',Estatus:'Error'});
       }
     }
   });

@@ -31,7 +31,7 @@ function guardarUsuarioProblema(req,res){
 
 
           //verificar que el usuario exista y que sea solver 4
-          var query_verificar_user = connection.query('SELECT * FROM usuario WHERE usuario =? AND id_rol = 4 OR id_rol = 1 ',[params.id_usuario], function(error, result){
+          var query_verificar_user = connection.query('SELECT * FROM usuario WHERE usuario =? AND id_rol = 1 ',[params.id_usuario], function(error, result){
             if(error){
               //throw error;
               res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
@@ -49,17 +49,17 @@ function guardarUsuarioProblema(req,res){
                 }
               });             
             }else{
-              res.status(200).send({Mensaje:'Error el Usuario no existe ó no cumple con rol Solucionador',Estatus:'Error'});
+              res.status(200).send({Mensaje:'Error. El Usuario no existe ó no cumple con rol Solucionador.',Estatus:'Error'});
             }
            }
           });            
         }else{
-          res.status(200).send({Mensaje:'El Solucionador  ya esta registrado en el sistema',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. El solucionador ya esta registrado en el sistema.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Solucionadory su tipo de problema',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder registrar el Solucionadory su tipo de problema.',Estatus:'Error'});
   }
 }
 
@@ -92,12 +92,12 @@ function modificarUsuarioProblema(req,res){
             });                                                                           
         }
         else{
-          res.status(200).send({Mensaje:'El Usuario por Tipo Problema no existe',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error.El usuario por tipo problema no existe.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar Usuario Por Tipo Problema',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder modificar usuario por tipo problema.',Estatus:'Error'});
   }
 }
 
@@ -115,7 +115,7 @@ function getUsuariosProblemas(req,res){
         res.status(200).json(usuarios_problemas);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Usuarios Por Tipo de Problema',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. No hay usuarios por tipo de problema.',Estatus:'Error'});
       }
     }
   });
@@ -136,7 +136,7 @@ function getUsuarioProblema(req,res){
         res.status(200).json(usuario_problema);   
       }
       else{
-        res.status(200).send({Mensaje:'El Usuario Por tipo de problema no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El usuario por tipo de problema no existe.',Estatus:'Error'});
       }
     }
   });
@@ -159,7 +159,7 @@ function getUsuarioTipoProblema(req,res){
         res.status(200).json(usuario_problema);   
       }
       else{
-        res.status(200).send({Mensaje:'El Usuario Por tipo de problema no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El usuario por tipo de problema no existe',Estatus:'Error'});
       }
     }
   });
@@ -185,7 +185,7 @@ function eliminarUsuarioProblema(req,res){
         res.status(200).send({Mensaje:'Usuario por Tipo de problema deshabilitado con exito',Estatus:'Ok'});  
       }
       else{
-        res.status(200).send({Mensaje:'El Usuario por Tipo de problema no existe',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El usuario por tipo de problema no existe',Estatus:'Error'});
       }
     }
   });

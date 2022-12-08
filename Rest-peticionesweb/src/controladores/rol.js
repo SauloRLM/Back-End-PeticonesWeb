@@ -20,7 +20,7 @@ function guardarRol(req,res){
 
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Registrar Empleado//
@@ -30,19 +30,19 @@ function guardarRol(req,res){
           [params.nombre_rol, params.descripcion_rol, params.estatus],function(error, result){
            if(error){
               // throw error;
-              res.status(200).send({Mensaje:'Error al registrar rol'});
+              res.status(200).send({Mensaje:'Error al registrar rol',Estatus:'Error'});
            }else{
               res.status(200).send({Mensaje:'Rol registrada con exito'});
            }
          });
         }
         else{
-          res.status(200).send({Mensaje:'Rol ya registrado en el sistema'});
+          res.status(200).send({Mensaje:'Rol ya registrado en el sistema',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Rol'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Rol',Estatus:'Error'});
   }
 }
 
@@ -56,7 +56,7 @@ function modificarRol(req,res){
     var query_verificar = connection.query('SELECT id_rol FROM rol WHERE id_rol =?',[id_rol], function(error, result){
       if(error){
           //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia'});
+          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
        }else{
         var resultado_verificacion = result;
         //Modificar Sucursal//
@@ -66,19 +66,19 @@ function modificarRol(req,res){
             [params.nombre_rol, params.descripcion_rol, params.estatus, id_rol],function(error, result){
             if(error){
               //throw error;
-              res.status(200).send({Mensaje:'Error al modificar Rol'});
+              res.status(200).send({Mensaje:'Error al modificar Rol',Estatus:'Error'});
             }else{
               res.status(200).send({Mensaje:'Rol modificado con exito'});
             }
           });
         }
         else{
-          res.status(200).send({Mensaje:'El Rol no existe'});
+          res.status(200).send({Mensaje:'El Rol no existe',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Rol'});
+    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Rol',Estatus:'Error'});
   }
 }
 
@@ -88,7 +88,7 @@ function getRoles(req,res){
   var query = connection.query('SELECT * FROM rol', [], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var roles = result;
@@ -97,7 +97,7 @@ function getRoles(req,res){
         res.status(200).json(roles);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Roles'});
+        res.status(200).send({Mensaje:'No hay Roles',Estatus:'Error'});
       }
     }
   });
@@ -110,7 +110,7 @@ function getRol(req,res){
   var query = connection.query('SELECT * FROM rol WHERE id_rol=?', [id_rol], function(error, result){
     if(error){
       // throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var rol = result;
@@ -120,7 +120,7 @@ function getRol(req,res){
         res.status(200).json(rol);   
       }
       else{
-        res.status(200).send({Mensaje:'El Rol no existe'});
+        res.status(200).send({Mensaje:'Error. No hay Roles',Estatus:'Error'});
       }
     }
   });
@@ -136,7 +136,7 @@ function eliminarRol(req,res){
 
     if(error){
       //throw error;
-      res.status(200).send({Mensaje:'Error en la petición'});
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{
 
       var resultado_verificacion = result.affectedRows;
@@ -145,7 +145,7 @@ function eliminarRol(req,res){
         res.status(200).send({Mensaje:'Rol deshabilitada con exito'});  
       }
       else{
-        res.status(200).send({Mensaje:'El Rol no existe'});
+        res.status(200).send({Mensaje:'El Rol no existe',Estatus:'Error'});
       }
     }
   });

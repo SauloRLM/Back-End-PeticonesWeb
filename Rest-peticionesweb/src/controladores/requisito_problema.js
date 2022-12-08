@@ -61,7 +61,7 @@ function guardarRequisitoProblema(req,res){
       }
       });        
   }else{
-    res.status(200).send({Mensaje:'Introduce la informacion correcta para registrar un requisito',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce la informacion correcta para registrar un requisito.',Estatus:'Error'});
   }
 }
 
@@ -93,7 +93,7 @@ function modificarRequisitoProblema(req,res){
               });            
           }
           else{
-            res.status(200).send({Mensaje:'Requisito de problema no registrado o no existe',Estatus:'Error'});
+            res.status(200).send({Mensaje:'Error. Requisito de problema no registrado o no existe.',Estatus:'Error'});
           }
          }
       });
@@ -118,13 +118,13 @@ function modificarRequisitoProblema(req,res){
               }
           });                  
         }else{
-          res.status(200).send({Mensaje:'Requisito de problema no registrado o no existe',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. Requisito de problema no registrado o no existe.',Estatus:'Error'});
         }
        }
     });
   
   }else {
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el Requisito del problema',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder modificar el Requisito del problema.',Estatus:'Error'});
   }
 }
 
@@ -141,7 +141,7 @@ function getRequisitosProblema(req,res){
         res.status(200).json(Requisitosproblema);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Requisitos para este problema',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. No hay Requisitos para este problema',Estatus:'Error'});
       }
     }
   });
@@ -161,7 +161,7 @@ var query = connection.query('select requisito_problema.id_requisito_problema, r
         res.status(200).json(Requisitoproblema);   
       }
       else{
-        res.status(200).send({Mensaje:'No existe ese Requisito para este problema',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. No existe ese requisito para este problema.',Estatus:'Error'});
       }
     }
   });

@@ -34,12 +34,12 @@ function guardarSucursal(req,res){
          });
         }
         else{
-          res.status(200).send({Mensaje:'sucursal ya registrada anteriormente', Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. sucursal ya registrada anteriormente.', Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar la sucursal', Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder registrar la sucursal.', Estatus:'Error'});
   }
 }
 
@@ -70,12 +70,12 @@ function modificarSucursal(req,res){
           });
         }
         else{
-          res.status(200).send({Mensaje:'Sucursal no existe', Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. sucursal no existe.', Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar la Sucursal', Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error.Introduce los datos correctamente para poder modificar la sucursal.', Estatus:'Error'});
   }
 }
 
@@ -94,7 +94,7 @@ function getSucursales(req,res){
         res.status(200).json(sucursales);   
       }
       else{
-        res.status(200).send({Mensaje:'No hay Sucursales', Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error.No hay sucursales', Estatus:'Error'});
       }
     }
   });
@@ -117,7 +117,7 @@ function getSucursal(req,res){
         res.status(200).json(sucursal);   
       }
       else{
-        res.status(200).send({Mensaje:'La Sucursal no existe', Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. La sucursal no existe.', Estatus:'Error'});
       }
     }
   });
@@ -142,7 +142,7 @@ function eliminarSucursal(req,res){
         res.status(200).send({Mensaje:'Sucursal  deshabilitada con exito', Estatus:'Ok'});  
       }
       else{
-        res.status(200).send({Mensaje:'La Sucursal no existe', Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. La sucursal no existe.', Estatus:'Error'});
       }
     }
   });

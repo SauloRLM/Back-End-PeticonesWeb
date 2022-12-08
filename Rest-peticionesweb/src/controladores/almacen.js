@@ -70,30 +70,30 @@ function guardarAlmacen(req,res){
                             [params.id_sucursal, params.id_codigo_articulo, params.cantidad_total, params.cantidad_disponible, params.tipo],function(error, result){
                                 if(error){
                                 // throw error;
-                                    res.status(200).send({Mensaje:'Error al registrar la Articulo',Estatus:'Error'});
+                                    res.status(200).send({Mensaje:'Error. Al registrar la Articulo.',Estatus:'Error'});
                                 }else{
                                     res.status(200).send({Mensaje:'Articulo registrado con exito',Estatus:'Ok'});
                                 }
                             });
 
                         }else{
-                            res.status(200).send({Mensaje:'EL Codigo Articulo no existe o no esta registrado',Estatus:'Error'});
+                            res.status(200).send({Mensaje:'Error. EL codigo articulo no existe o no esta registrado.',Estatus:'Error'});
                         }
                     }          
                 });                             
               }else{
-                  res.status(200).send({Mensaje:'La Sucursal no existe o no esta registrada',Estatus:'Error'});
+                  res.status(200).send({Mensaje:'Error. La sucursal no existe o no esta registrada.',Estatus:'Error'});
               }
             }
           });          
         }
         else{
-          res.status(200).send({Mensaje:'Producto ya registrado en esta sucursal anteriormente',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. Producto ya registrado en esta sucursal anteriormente.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder registrar el Pruducto',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder registrar el Pruducto.',Estatus:'Error'});
   }
 }
 
@@ -124,12 +124,12 @@ function modificarAlmacen(req,res){
             });            
         }
         else{
-          res.status(200).send({Mensaje:'producto no registrado o no existe',Estatus:'Error'});
+          res.status(200).send({Mensaje:'Error. Producto no registrado o no existe.',Estatus:'Error'});
         }
        }
     });
   }else{
-    res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el almacen',Estatus:'Error'});
+    res.status(200).send({Mensaje:'Error. Introduce los datos correctamente para poder modificar el almacen.',Estatus:'Error'});
   }
 }
 
@@ -168,7 +168,7 @@ function getAlmacen(req,res){
         //res.json(rows);
         res.status(200).json(almacen);   
       }else{
-        res.status(200).send({Mensaje:'El Producto no existe en el almacen',Estatus:'Error'});
+        res.status(200).send({Mensaje:'Error. El Producto no existe en el almacen.',Estatus:'Error'});
       }
     }
   });

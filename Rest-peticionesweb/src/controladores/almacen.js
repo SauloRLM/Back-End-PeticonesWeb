@@ -154,6 +154,27 @@ function getAlmacenes(req,res){
   });
 }
 
+//hacer inner join con sucursal y con producto 
+function getAlmacenesTypeProblem(req,res){
+  var id_tipo_problema = req.params.id_tipo_rpoblema;
+  var query = connection.query('SELECT almacen.id_almacen, almacen.id_sucursal ,sucursal.nombre_sucursal, almacen.id_codigo_articulo, codigo_articulo.nombre_articulo, cantidad_total, cantidad_disponible, tipo FROM almacen INNER JOIN sucursal on sucursal.id_sucursal = almacen.id_sucursal INNER JOIN codigo_articulo on codigo_articulo.id_codigo_articulo  = almacen.id_codigo_articulo INNER JOIN articulo_problema ON articulo_problema.id_codigo_articulo = almacen.id_codigo_articulo WHERE almacen.id_sucursal = 16  AND articulo_problema.id_tipo_problema = ?', [id_tipo_problema], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+    }else{
+
+      var almacenes = result;
+            
+      if(almacenes.length != 0){
+        res.status(200).json(almacenes);   
+      }
+      else{
+        res.status(200).send({Mensaje:'No hay productos en el almacen',Estatus:'Error'});
+      }
+    }
+  });
+}
+
 
 function getAlmacen(req,res){
   var id_almacen = req.params.id_almacen;
@@ -179,5 +200,6 @@ module.exports={
     modificarAlmacen,
     getAlmacenes,
     getAlmacen,
+    getAlmacenesTypeProblem
   //  eliminarAlmacen,    
 };

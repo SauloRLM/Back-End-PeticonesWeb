@@ -16,7 +16,7 @@ function guardarArticuloProblema(req,res){
   if(params.id_codigo_articulo && params.id_tipo_problema && connection){
 
     //Verificar si existe ya el registro 
-    var query_verificar = connection.query('SELECT id_articulo_problema FROM articulo_problema WHERE id_codigo_articulo = ? AND id_tipo_problema = ?',[params.id_codigo_articulo,params.id_articulo_problema], function(error, result){
+    var query_verificar = connection.query('SELECT id_articulo_problema FROM articulo_problema WHERE id_codigo_articulo = ? AND id_tipo_problema = ?',[params.id_codigo_articulo,params.id_tipo_problema], function(error, result){
     
         if(error){
           //throw error;
@@ -82,7 +82,7 @@ function modificarArticuloProblema(req,res){
 
 //hacer inner join con sucursal y con producto 
 function getArticulosProblemas(req,res){
-  var query = connection.query('SELECT articulo_problema.id_articulo_problema, articulo_problema.id_codigo_articulo, codigo_articulo.nombre_articulo, articulo_problema.id_tipo_problema, tipo_problema.tipo_problema FROM articulo_problema INNER JOIN codigo_articulo ON codigo_articulo.id_codigo_articulo = articulo_problema.id_codigo_articulo INNER JOIN tipo_problema ON  tipo_problema.id_tipo_problema = articulo_problema.id_tipo_problema', [], function(error, result){
+  var query = connection.query('SELECT articulo_problema.id_articulo_problema, articulo_problema.id_codigo_articulo, codigo_articulo.nombre_articulo, articulo_problema.id_tipo_problema, tipo_problema.tipo_problema FROM articulo_problema INNER JOIN codigo_articulo ON codigo_articulo.id_codigo_articulo = articulo_problema.id_codigo_articulo INNER JOIN tipo_problema ON  tipo_problema.id_tipo_problema = articulo_problema.id_tipo_problema order by id_articulo_problema', [], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});

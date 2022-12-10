@@ -14,12 +14,12 @@ function login(req,res){
   var estatus = 'A';
 
   //si el usuario es baja B
-  var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND Estatus = ?",[user,estatus],function(error, result){        
+  var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND estatus = ?",[user,estatus],function(error, result){        
     if(error){          
       res.status(200).send({Mensaje:'Error al Consultar',Estatus:'Error'});
     }else{
       var resultado_B = result;
-      //verificar que el id del empleado exista y el id de la sucursal exista//        
+      //verificar que el id del empleado exista y el id de la sucursal exista//              
       if(resultado_B.length > 0){
 
         var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND password= ? AND login < 5",[user,password],function(error, result){        

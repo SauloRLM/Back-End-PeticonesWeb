@@ -9,10 +9,8 @@ connection.connect(function(error){
 //acciones
 function guardarCodigoArticulo(req,res){
   //Recoger parametros peticion
-  var params = req.body;
-
+  var params = req.body;  
   if(params.id_codigo_articulo && params.nombre_articulo && params.descripcion && connection){
-
     //verificar que no exista ese tipo de problema
     var query_verificar = connection.query('SELECT id_codigo_articulo FROM codigo_articulo WHERE id_codigo_articulo =?',[params.id_codigo_articulo], function(error, result){
       if(error){

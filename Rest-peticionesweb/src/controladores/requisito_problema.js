@@ -12,54 +12,22 @@ connection.connect(function(error){
 function guardarRequisitoProblema(req,res){
   //Recoger parametros peticion
   var params = req.body;
-  //console.table(params);
-  if(params.id_problema && params.id_codigo_articulo && params.cantidad && params.unidad && params.cantidad  && connection){    
-    //console.log("entra al if codigo articulo");
-    var query_verificar = connection.query('SELECT id_requisito_problema FROM requisito_problema WHERE id_problema =? AND id_codigo_articulo = ?',[params.id_problema, params.id_codigo_articulo], function(error, result){
-      if(error){
-          //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
-       }else{
-        var resultado_verificacion = result;
-        //Modificar Sucursal//
-        if(resultado_verificacion.length == 0){
-          var query = connection.query('INSERT INTO requisito_problema(id_problema, id_codigo_articulo, cantidad,  unidad, precio) VALUES(?,?,?,?,?)',
-          [params.id_problema, params.id_codigo_articulo , params.cantidad , params.unidad , params.precio ],function(error, result){
-            if(error){
-                // throw error;
-                res.status(200).send({Mensaje:'Error al registrar Requisito problema',Estatus:'Error'});
-            }else{
-                res.status(200).send({Mensaje:'Requisito del problema registrado con exito',Estatus:'Ok'});
-            }
-          });
-        }else{
-          res.status(200).send({Mensaje:'Error ya existe ese requisito',Estatus:'Error'});
-        }
-      }
+  var band = 'A'  
+  if(params.requeriment && connection){    
+    params.requeriment.forEach(element => {              
+      //console.log(params);
+      var query = connection.query('INSERT INTO requisito_problema(id_problema, id_codigo_articulo, descripcion_requisito, cantidad,  unidad, precio) VALUES(?,?,?,?,?,?)',
+      [element.id_problema, element.id_codigo_articulo ,element.descripcion_requisito , element.cantidad , element.unidad , element.precio ],function(error, result){
+          if(error){            
+              band = 'B'
+          }
       });    
-  }else if (params.id_problema && params.descripcion_requisito && params.cantidad && params.unidad && params.cantidad  && connection){    
-    var query_verificar = connection.query('SELECT id_requisito_problema FROM requisito_problema WHERE id_problema =? AND descripcion_requisito = ?',[params.id_problema, params.descripcion_requisito], function(error, result){
-      if(error){
-          //throw error;
-          res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
-       }else{
-        var resultado_verificacion = result;
-        //Modificar Sucursal//
-        if(resultado_verificacion.length == 0){
-          var query = connection.query('INSERT INTO requisito_problema(id_problema, descripcion_requisito, cantidad,  unidad, precio) VALUES(?,?,?,?,?)',
-          [params.id_problema, params.descripcion_requisito , params.cantidad , params.unidad , params.precio ],function(error, result){
-            if(error){
-                // throw error;
-                res.status(200).send({Mensaje:'Error al registrar Requisito problema',Estatus:'Error'});
-            }else{
-                res.status(200).send({Mensaje:'Requisito del problema registrado con exito',Estatus:'Ok'});
-            }
-          });
-        }else{
-          res.status(200).send({Mensaje:'Error ya existe ese requisito',Estatus:'Error'});
-        }
-      }
-      });        
+    });       
+    if (band == 'B' ){
+      res.status(200).send({Mensaje:'Error al registrar Requisito problema',Estatus:'Error'});
+    }else{
+      res.status(200).send({Mensaje:'Requisito del problema registrado con exito',Estatus:'Ok'});
+    }
   }else{
     res.status(200).send({Mensaje:'Error. Introduce la informacion correcta para registrar un requisito.',Estatus:'Error'});
   }

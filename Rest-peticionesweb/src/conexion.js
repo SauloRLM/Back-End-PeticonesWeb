@@ -6,8 +6,9 @@ const mysql = require('mysql');
 const mysqlConnection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password:'Saulo@123',
-    database: 'peticionesweb'
+    password:'saulo2000',
+    database: 'peticionesweb',
+    insecureAuth: true  
     //port: 3306;
 });
 /*

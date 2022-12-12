@@ -256,7 +256,7 @@ function getUsuarios(req,res){
 function getUsuario(req,res){
   var id_usuario = req.params.id_usuario;
 
-  var query = connection.query('SELECT * FROM usuario WHERE id_usuario=?', [id_usuario], function(error, result){
+  var query = connection.query('SELECT usuario.*,empleado.nombre_empleado FROM usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado WHERE id_usuario= ?', [id_usuario], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
@@ -267,6 +267,24 @@ function getUsuario(req,res){
       if(usuario.length != 0){
         //res.json(rows);
         res.status(200).json(usuario);   
+      }
+      else{
+        res.status(200).send({Mensaje:'Error. El Usuario no existe',Estatus:'Error'});
+      }
+    }
+  });
+}
+
+function getUsuariosSolvers(req,res){
+  var id_usuario = req.params.id_usuario;
+  var query = connection.query('select usuario.id_usuario, empleado.nombre_empleado from usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado WHERE id_rol= 4;', [id_usuario], function(error, result){
+    if(error){      
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+    }else{
+      var usuarioSolver = result;            
+      if(usuarioSolver.length != 0){
+        //res.json(rows);
+        res.status(200).json(usuarioSolver);   
       }
       else{
         res.status(200).send({Mensaje:'Error. El Usuario no existe',Estatus:'Error'});
@@ -309,5 +327,5 @@ module.exports={
     getUsuarios,
     getUsuario,
     eliminarUsuario,    
-    
+    getUsuariosSolvers    
 };

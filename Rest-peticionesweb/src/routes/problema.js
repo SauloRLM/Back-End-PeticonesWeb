@@ -11,6 +11,6 @@ api.get('/problemas',ProblemaControlador.getProblemas);
 api.get('/problema/:fecha_solicitud',ProblemaControlador.getProblema);
 api.get('/problemas-order',ProblemaControlador.getProblemasOrder);
 api.put('/estatus-problema/:id_problema',ProblemaControlador.ProblemaEstatus);
-//api.delete('/articulo-problema/:id_articulo_problema' ,AlmacenControlador.eliminarAlmacen);
+api.delete('/requisito-problema/:id_problema',ProblemaControlador.deleteRequestProblem);
 
 module.exports=api;

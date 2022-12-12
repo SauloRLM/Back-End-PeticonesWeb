@@ -10,6 +10,7 @@ api.post('/login',UsuarioControlador.login);
 api.put('/logout',UsuarioControlador.logout);
 api.put('/modificar-usuario/:id_usuario',UsuarioControlador.modificarUsuario);
 api.get('/usuarios',UsuarioControlador.getUsuarios);
+api.get('/usuarios-solvers',UsuarioControlador.getUsuariosSolvers);
 api.get('/usuario/:id_usuario',UsuarioControlador.getUsuario);
 api.delete('/eliminar-usuario/:id_usuario' ,UsuarioControlador.eliminarUsuario);
 

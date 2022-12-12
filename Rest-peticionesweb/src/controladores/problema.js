@@ -26,8 +26,8 @@ function guardarProblema(req,res){
 
   if(params.id_tipo_problema && params.descripcion_problema && params.id_usuario && params.estatus && datetime && connection){    
 
-    var query = connection.query('INSERT INTO problema(id_tipo_problema, descripcion_problema, id_usuario,  estatus, fecha_solicitud) VALUES(?,?,?,?,?)',
-    [params.id_tipo_problema, params.descripcion_problema , params.id_usuario , params.estatus , datetime ],function(error, result){
+    var query = connection.query('INSERT INTO problema(id_tipo_problema, descripcion_problema, id_usuario,  estatus, fecha_solicitud, toltal) VALUES(?,?,?,?,?,?)',
+    [params.id_tipo_problema, params.descripcion_problema , params.id_usuario , params.estatus , datetime,0],function(error, result){
      if(error){
         // throw error;
         res.status(200).send({Mensaje:'Error al registrar problema',Estatus:'Error'});
@@ -133,12 +133,10 @@ function ProblemaEstatus(req,res){
                 //materiales va a estar compuesto por dos campos cantidad a restar y el codigo del articulo 
                 var totalPrecioRequisitos = 0 ;
                 params.materials.array.forEach(element => {              
-                  var codigo = elemnet.codigo;
+                  var codigo = elemnet.id_codigo_articulo;
                   var cantidad = elemet.cantidad;                  
                   var tipo = element.tipo;
-                  var precio = element.precio;
-
-                  totalPrecioRequisitos = totalPrecioRequisitos + precio;
+                  var precio = element.precio;                  
 
                   if(codigo == '5000000000'){
                     totalPrecioRequisitos = totalPrecioRequisitos + precio;
@@ -152,7 +150,7 @@ function ProblemaEstatus(req,res){
                     }else{
                       var resultado_verificacion = result;  
                       if(resultado_verificacion.length != 0){
-                        //si existe se resta 
+                        //si existe se resta A almacen
                         var query_almacen = connection.query('UPDATE Almacen SET cantidad_disponible = (cantidad_disponible - ?) WHERE id_sucursal = "16" and id_codigo_articulo = ?;',
                         [codigo, cantidad ],function(error, result){
                           if(error){
@@ -179,9 +177,14 @@ function ProblemaEstatus(req,res){
                           if(error){
                             //throw error;
                             banderaError = 'b';
-                          }else{
-                            var resultado_verificacion_update = result;  
+                          }else{                            
+                            var resultado_verificacion_update = result;                              
                             if(resultado_verificacion_update.length > 0){
+
+                              //obtener el tipo del producto en cursa desde la sucursal 16
+                              
+
+
                               //se procede hacer el nuevo almacen con la nueva cantidad
                               var cantTotal = 0;
                               var query = connection.query('INSERT INTO almacen(id_sucursal, id_codigo_articulo, cantidad_total, cantidad_disponible, tipo) VALUES(?,?,?,?,?)',
@@ -211,12 +214,12 @@ function ProblemaEstatus(req,res){
           }else if(params.estatus == 'TERMINADO'){
 
             var query = connection.query('UPDATE problema SET estatus=?, fecha_terminado = ? WHERE id_problema = ?',
-            [params.params.estatus, datetime, id_problema],function(error, result){
+            [params.estatus, datetime, id_problema],function(error, result){
               if(error){
                 //throw error;
                 res.status(200).send({Mensaje:'Error al modificar el estatus del problema',Estatus:'Error'});
               }else{
-                res.status(200).send({Mensaje:'Estatus del problema modificado con exito',Estatus:'Ok'});
+                res.status(200).send({Mensaje:'Estatus del problema Terminado con exito',Estatus:'Ok'});
               }
             });      
       
@@ -227,7 +230,7 @@ function ProblemaEstatus(req,res){
                 //throw error;
                 res.status(200).send({Mensaje:'Error al modificar el estatus del problema',Estatus:'Error'});
               }else{
-                res.status(200).send({Mensaje:'Estatus del problema modificado con exito',Estatus:'Ok'});
+                res.status(200).send({Mensaje:'Estatus del problema Rechazado con exito',Estatus:'Ok'});
               }
             });      
           }
@@ -240,6 +243,34 @@ function ProblemaEstatus(req,res){
     res.status(200).send({Mensaje:'Introduce los datos correctamente para poder modificar el estatus del problema',Estatus:'Error'});
   }
 }
+
+//eliminar los requisitos del prolema y regresar a aceptado y la fecha de revision debe de ser null e indicar que fue rechazado.
+function deleteRequestProblem(req,res){
+  var id_problema = req.params.id_problema;  
+  var query = connection.query('DELETE FROM requisito_problema WHERE id_problema = ?',
+  [estatus, id_usuario],function(error, result){
+    if(error){      
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+    }else{
+      var resultado_verificacion = result.affectedRows;            
+      if(resultado_verificacion != 0){        
+        var query = connection.query('UPDATE problema SET estatus="ACEPTADO", fecha_revision = NULL WHERE id_problema = ?',
+        [id_problema],function(error, result){
+          if(error){
+            //throw error;
+            res.status(200).send({Mensaje:'Error al modificar el estatus del problema',Estatus:'Error'});
+          }else{
+            res.status(200).send({Mensaje:'Estatus del problema modificado con exito',Estatus:'Ok'});
+          }
+        });      
+      }
+      else{
+        res.status(200).send({Mensaje:'Error. No hay requisitos a eliminar.',Estatus:'Error'});
+      }
+    }
+  });
+}
+
 
 //idea get multiple por estados para las distintas tablas de admin y solver y de stremanager
 function getProblemas(req,res){
@@ -376,11 +407,17 @@ function getProblemasOrder(req,res){
   });  
 }
 
+
+
+
+
+
 module.exports={  
     guardarProblema,
     modificarProblema,    
     getProblemas,    
     getProblema,
     ProblemaEstatus,    
-    getProblemasOrder
+    getProblemasOrder,
+    deleteRequestProblem
 };

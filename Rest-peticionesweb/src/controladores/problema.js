@@ -155,10 +155,13 @@ function ProblemaEstatus(req,res){
                           if(error){
                             //throw error;
                             banderaError = 'b';
-                          }else{
+                          }else{                            
+                            
+                            var cantidadAlmacen = 0;
+                            result[0].cantidad_disponible
+                            //cantidadAlmacen = cantidadAlmacen - cantidad;
 
-                            var cantidadAlmacen = result[0].cantidad_disponible;                            
-                            cantidadAlmacen = cantidadAlmacen - cantidad;
+                            console.log('obtengo el dato disponilbes y le resto:');
 
                             var query_almacen = connection.query('UPDATE almacen SET cantidad_disponible = ?  WHERE id_sucursal = "16" AND id_codigo_articulo = ?;',
                             [ cantidadAlmacen, codigo ],function(error, result){
@@ -167,6 +170,7 @@ function ProblemaEstatus(req,res){
                                 banderaError = 'b';
                               }else{
                                 var resultado_verificacion_update = result;  
+                                console.log(resultado_verificacion_update.length)
                                 if(resultado_verificacion_update.length > 0){
                                   //se procede a modificar el almacen receptor
                                   var query_almacen = connection.query('SELECT cantidad_total from almacen WHERE id_sucursal = ? and id_codigo_articulo = ?;',
@@ -178,7 +182,7 @@ function ProblemaEstatus(req,res){
 
                                       var cantidadAlmacenRecip = result[0].cantidad_total;
                                         cantidadAlmacenRecip = cantidadAlmacenRecip + cantidad;
-
+                                        console.log('obtengo el dato total y lo sumo :'+cantidadAlmacen);
                                         var query = connection.query('UPDATE almacen SET cantidad_total = ? WHERE id_sucursal = ?',
                                         [ cantidadAlmacenRecip,params.id_sucursal],function(error, result){
                                         if(error){
@@ -219,26 +223,10 @@ function ProblemaEstatus(req,res){
                               if(error){
                                 //throw error;
                                 banderaError = 'b';
-                              }else{                            
+                              }else{        
 
-
-                              }
-                            })
-
-
-
-                            var resultado_verificacion_update = result;                              
-                            if(resultado_verificacion_update.length > 0){
-
-                              //obtener el tipo del producto en cursa desde la sucursal 16
-                              var query = connection.query('SELECT tipo FROM almacen WHERE id_sucursal = 16 AND id_codigo_articulo = ?', [codigo], function(error, result){
-                                if(error){
-                                  // throw error;
-                                  res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
-                                }else{
-                            
-                                  var tipo = result[0].tipo;
-                                    //se procede hacer el nuevo almacen con la nueva cantidad
+                                var resultado_verificacion_update = result;                              
+                                if(resultado_verificacion_update.length > 0){
                                   var cantTotal = 0;
                                   var query = connection.query('INSERT INTO almacen(id_sucursal, id_codigo_articulo, cantidad_total, cantidad_disponible, tipo) VALUES(?,?,?,?,?)',
                                   [params.id_sucursal, codigo, cantidad, cantTotal,tipo],function(error, result){
@@ -250,16 +238,13 @@ function ProblemaEstatus(req,res){
                                       [ totalPrecioRequisitos,id_problema],function(error, result){
                                         if(error){
                                           banderaError = 'c'
-                                        }else{
-                                          console.log(totalPrecioRequisitos);
                                         }
-                                      });
-                                      
+                                      });                                      
                                     }
-                                  });                                       
+                                  });                                                    
                                 }
-                              });                             
-                            }
+                              }
+                            })                          
                           }
                         });                                                                                                                                    
                       }

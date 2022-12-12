@@ -13,10 +13,7 @@ function guardarUsuarioProblema(req,res){
   //Recoger parametros peticion
   var params = req.body;
 
-  if(params.id_tipo_problema && params.id_usuario && params.estatus && connection){
-
-    
-    
+  if(params.id_tipo_problema && params.id_usuario && params.estatus && connection){        
     //verificar que no exista ese usuario por tipo de problema
     var query_verificar = connection.query('SELECT id_usuario_problema FROM usuario_problema WHERE id_tipo_problema =? AND id_usuario =? ',[params.id_tipo_problema, params.id_usuario], function(error, result){
 
@@ -38,7 +35,7 @@ function guardarUsuarioProblema(req,res){
            }else{
             var resultado_verificacion_user = result;
             //verificar
-            if(resultado_verificacion_user.length > 0){
+            if(resultado_verificacion_user.length == 0){
               var query = connection.query('INSERT INTO usuario_problema(id_tipo_problema, id_usuario, estatus) VALUES(?,?,?)',
               [params.id_tipo_problema, params.id_usuario, params.estatus],function(error, result){
                 if(error){

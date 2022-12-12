@@ -28,6 +28,13 @@ function guardarAlmacen(req,res){
   //Recoger parametros peticion
   var params = req.body;
 
+cantidad_disponible
+cantidad_total
+id_codigo_articulo
+id_sucursal
+tipo
+
+
   if(params.id_sucursal && params.id_codigo_articulo  && params.cantidad_total && params.cantidad_disponible && params.tipo && connection){
 
     //Verrificar si existe ese registro en el almacen 
@@ -156,7 +163,7 @@ function getAlmacenes(req,res){
 
 //hacer inner join con sucursal y con producto 
 function getAlmacenesTypeProblem(req,res){
-  var id_tipo_problema = req.params.id_tipo_rpoblema;
+  var id_tipo_problema = req.params.id_tipo_problema;
   var query = connection.query('SELECT almacen.id_almacen, almacen.id_sucursal ,sucursal.nombre_sucursal, almacen.id_codigo_articulo, codigo_articulo.nombre_articulo, cantidad_total, cantidad_disponible, tipo FROM almacen INNER JOIN sucursal on sucursal.id_sucursal = almacen.id_sucursal INNER JOIN codigo_articulo on codigo_articulo.id_codigo_articulo  = almacen.id_codigo_articulo INNER JOIN articulo_problema ON articulo_problema.id_codigo_articulo = almacen.id_codigo_articulo WHERE almacen.id_sucursal = 16  AND articulo_problema.id_tipo_problema = ?', [id_tipo_problema], function(error, result){
     if(error){
       // throw error;

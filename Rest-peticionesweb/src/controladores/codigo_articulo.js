@@ -28,7 +28,7 @@ function guardarCodigoArticulo(req,res){
                       // throw error;
                       res.status(200).send({Mensaje:'Error al registrar el codigo y el articulo',Estatus:'Error'});
                     }else{
-                      res.status(200).send({Mensaje:'Codigo y Articulo registrado con exito',Estatus:'Ok'});
+                      res.status(200).send({Mensaje:'Codigo de articulo registrado con exito',Estatus:'Ok'});
                     }
             });             
         }else{

@@ -1,13 +1,11 @@
 'use strict'
-
-const dbconnection = require('./conectionBD');
-const connection = dbconnection();
+const conexion = require('../conexion');
+const connection = conexion();
 connection.connect(function(error){
-    if(error){
-     console.log("No es posible establecer conexión con el servidor de base de datos. Verifique la conexión.");
-   }
-  });
-
+  if(error){
+   console.log("No es posible establecer conexión con el servidor de base de datos. Verifique la conexión.")
+ }
+});
 //acciones
 function guardarRequisitoProblema(req,res){
   //Recoger parametros peticion
@@ -15,7 +13,7 @@ function guardarRequisitoProblema(req,res){
   var band = 'A'  
   if(params.requeriment && connection){    
     params.requeriment.forEach(element => {              
-      //console.log(params);
+      //console.log(element);
       var query = connection.query('INSERT INTO requisito_problema(id_problema, id_codigo_articulo, descripcion_requisito, cantidad,  unidad, precio) VALUES(?,?,?,?,?,?)',
       [element.id_problema, element.id_codigo_articulo ,element.descripcion_requisito , element.cantidad , element.unidad , element.precio ],function(error, result){
           if(error){            
@@ -31,6 +29,7 @@ function guardarRequisitoProblema(req,res){
   }else{
     res.status(200).send({Mensaje:'Error. Introduce la informacion correcta para registrar un requisito.',Estatus:'Error'});
   }
+
 }
 
 /**/

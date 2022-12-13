@@ -1,7 +1,7 @@
 'use strict'
 //const { param } = require('../routes/usuario_problema');
-const dbconnection = require('./conectionBD');
-const connection = dbconnection();
+const conexion = require('../conexion');
+const connection = conexion();
 connection.connect(function(error){
   if(error){
    console.log("No es posible establecer conexión con el servidor de base de datos. Verifique la conexión.")

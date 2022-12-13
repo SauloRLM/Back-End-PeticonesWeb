@@ -27,14 +27,6 @@ connection.connect(function(error){
 function guardarAlmacen(req,res){
   //Recoger parametros peticion
   var params = req.body;
-
-cantidad_disponible
-cantidad_total
-id_codigo_articulo
-id_sucursal
-tipo
-
-
   if(params.id_sucursal && params.id_codigo_articulo  && params.cantidad_total && params.cantidad_disponible && params.tipo && connection){
 
     //Verrificar si existe ese registro en el almacen 

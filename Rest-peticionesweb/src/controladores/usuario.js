@@ -13,15 +13,16 @@ function login(req,res){
   var password = params.password;
   var estatus = 'A';
 
+  //console.log(params);
+
   //si el usuario es baja B
-  var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND estatus = ?",[user,estatus],function(error, result){        
+  var query = connection.query("SELECT * FROM usuario WHERE usuario = ? AND estatus = ?",[user,estatus],function(error, result){        
     if(error){          
       res.status(200).send({Mensaje:'Error al Consultar',Estatus:'Error'});
     }else{
       var resultado_B = result;
       //verificar que el id del empleado exista y el id de la sucursal exista//              
       if(resultado_B.length > 0){
-
         var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND password= ? AND login < 5",[user,password],function(error, result){        
   
           if(error){    
@@ -276,8 +277,8 @@ function getUsuario(req,res){
 }
 
 function getUsuariosSolvers(req,res){
-  var id_usuario = req.params.id_usuario;
-  var query = connection.query('select usuario.id_usuario, empleado.nombre_empleado from usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado WHERE id_rol= 4;', [id_usuario], function(error, result){
+  
+  var query = connection.query('select usuario.id_usuario, empleado.nombre_empleado from usuario INNER JOIN empleado ON empleado.id_empleado = usuario.id_empleado WHERE id_rol= 4;', [], function(error, result){
     if(error){      
       res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
     }else{

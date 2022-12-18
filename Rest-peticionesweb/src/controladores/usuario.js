@@ -14,7 +14,7 @@ function login(req,res){
   var estatus = 'A';
 
   //si el usuario es baja B
-  var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND estatus = ?",[user,estatus],function(error, result){        
+  var query = connection.query("SELECT * FROM usuario WHERE usuario=  ? AND estatus = ?",[user,estatus],function(error, result){        
     if(error){          
       res.status(200).send({Mensaje:'Error al Consultar',Estatus:'Error'});
     }else{
@@ -22,53 +22,56 @@ function login(req,res){
       //verificar que el id del empleado exista y el id de la sucursal exista//              
       if(resultado_B.length > 0){
 
-        var query = connection.query("SELECT * FROM usuario WHERE usuario= ? AND password= ? AND login < 5",[user,password],function(error, result){        
-  
+        var query = connection.query("SELECT * FROM usuario WHERE usuario= BINARY ? AND password= BINARY ?",[user,password],function(error, result){          
           if(error){    
             // throw error;
             res.status(200).send({Mensaje:'Error al Consultar',Estatus:'Error'});
-          }else{            
+          }else{ 
+
             var resultado_verificacion = result;
             if(resultado_verificacion.length > 0){    
                   
               //nuevo para validar mas de una vez el inicio de sesion------ 5 veces como maximo
-              var query = connection.query('SELECT login FROM usuario WHERE usuario= ? AND password= ?', [user,password], function(error, result){
+              var query = connection.query('SELECT login FROM usuario WHERE usuario= ? AND password= ? AND login < 5', [user,password], function(error, result){
                 if(error){
                   // throw error;
                   res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
                 }else{
-            
-                  var numlogin = result[0].login + 1;
-                  //console.log(numlogin);                                    
-                  var query = connection.query('UPDATE usuario SET login= ? WHERE usuario = ? AND password = ?',
-                  [numlogin,user,password],function(error, result){
-                    if(error){
-                    //throw error;
-                      res.status(200).send({Mensaje:'Error al inisiar sesión',Estatus:'Error'});
-                    }else{                  
-                        var query = connection.query('SELECT * FROM usuario WHERE usuario=? AND password=?', [user,password], function(error, result){
-                          if(error){
-                            // throw error;
-                            res.status(200).send({Mensaje:'Error en la solicitud',Estatus:'Error'});
-                          }else{
-                      
-                            var usuario = result;                      
-                            if(usuario.length != 0){
-                              //res.json(rows);
-                              res.status(200).send({Mensaje:'Inicio de sesion Exitoso',Estatus:'Ok', usuario});                           
-                              //console.log(usuario);
+                  var resultado = result;
+                  if(resultado.length > 0){
+                    
+                    var query = connection.query('UPDATE usuario SET login= login+1 WHERE usuario = ? AND password = ?',
+                    [user,password],function(error, result){
+                      if(error){
+                      //throw error;
+                        res.status(200).send({Mensaje:'Error al inisiar sesión',Estatus:'Error'});
+                      }else{                  
+                          var query = connection.query('SELECT * FROM usuario WHERE usuario=? AND password=?', [user,password], function(error, result){
+                            if(error){
+                              // throw error;
+                              res.status(200).send({Mensaje:'Error en la solicitud',Estatus:'Error'});
+                            }else{
+                          
+                              var usuario = result;                      
+                              if(usuario.length != 0){
+                                //res.json(rows);
+                                res.status(200).send({Mensaje:'Inicio de sesion Exitoso',Estatus:'Ok', usuario});                           
+                                //console.log(usuario);
+                              }
+                              else{
+                                res.status(200).send({Mensaje:'Error. En la carga de datos de inicio de sesion.',Estatus:'Error'});
+                              }
                             }
-                            else{
-                              res.status(200).send({Mensaje:'Error. En la carga de datos de inicio de sesion.',Estatus:'Error'});
-                            }
-                          }
-                        });
-                    }
-                  }); 
+                          });
+                      }
+                    });                                      
+                  }else{
+                    res.status(200).send({Mensaje:'Error. Usuario con maximo de sesiones iniciadas, cierre una para poder acceder aqui!!.', Estatus:'Error'});  
+                  }                             
                 }
               });                                                                                                                                 
             }else{
-              res.status(200).send({Mensaje:'Error. Usuario con sesión iniciada o datos incorrectos verifique!!.', Estatus:'Error'});  
+              res.status(200).send({Mensaje:'Error. Datos incorrectos verifique!!.', Estatus:'Error'});  
             }                        
           }
         });  
@@ -84,7 +87,7 @@ function logout(req,res){
   var user = params.usuario;  
   var password = params.password;  
   //cierre de sesion
-  var query = connection.query('UPDATE usuario SET login= 0 WHERE usuario = ? AND password = ?',
+  var query = connection.query('UPDATE usuario SET login= login-1 WHERE usuario = ? AND password = ?',
     [user,password],function(error, result){
     if(error){
       //throw error;

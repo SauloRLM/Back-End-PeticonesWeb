@@ -12,20 +12,19 @@ function guardarProblema(req,res){
   var params = req.body;
 
   //calculo de hora y fecha
-  let date = new Date();
-  var fecha =date.toISOString().split('T')[0];
-  //console.log(fecha);
-  var hora = date.toLocaleTimeString('en-US').split(' ')[0];
-  //console.log(hora);
-  var datetime = fecha+' '+ hora;
-  //console.log(datetime);
+    var date = new Date();
+    var fecha =date.toISOString().split('T')[0];    
+    var hora = date.toLocaleTimeString('en-US').split(' ')[0];    
+    var datetime = fecha+' '+ hora;
 
-  //&& params.fecha_solicitud
+    //console.log(params);
+    //console.log(datetime);
+    
 
-  if(params.id_tipo_problema && params.descripcion_problema && params.id_usuario && params.estatus && datetime && connection){    
+  if(params.id_tipo_problema && params.descripcion_problema && params.id_usuario && params.estatus && connection){    
 
-    var query = connection.query('INSERT INTO problema(id_tipo_problema, descripcion_problema, id_usuario,  estatus, fecha_solicitud, toltal) VALUES(?,?,?,?,?,?)',
-    [params.id_tipo_problema, params.descripcion_problema , params.id_usuario , params.estatus , datetime,0],function(error, result){
+    var query = connection.query('INSERT INTO problema(id_tipo_problema, descripcion_problema, id_usuario,  estatus, fecha_solicitud, total) VALUES(?,?,?,?,?,?)',
+    [params.id_tipo_problema, params.descripcion_problema , params.id_usuario , params.estatus , datetime, 0],function(error, result){
      if(error){
         // throw error;
         res.status(200).send({Mensaje:'Error al registrar problema',Estatus:'Error'});
@@ -77,14 +76,19 @@ function ProblemaEstatus(req,res){
   var params = req.body;  
   if(params.estatus && connection){
 
-    //calculo de hora y fecha
-    let date = new Date();
-    var fecha =date.toISOString().split('T')[0];
-    //console.log(fecha);
-    var hora = date.toLocaleTimeString('en-US').split(' ')[0];
-    //console.log(hora);
+  //calculo de hora y fecha actual
+    var date = new Date();
+    var fecha =date.toISOString().split('T')[0];    
+    var hora = date.toLocaleTimeString('en-US').split(' ')[0];    
     var datetime = fecha+' '+ hora;
     //console.log(datetime);
+  //prueba de nueva fecha menos 3 meses
+    var dateAtras = new Date();
+    dateAtras.setDate(date.getDate() - 90);    
+    var fecha_3 =dateAtras.toISOString().split('T')[0];    
+    var hora_3 = dateAtras.toLocaleTimeString('en-US').split(' ')[0];    
+    var tiempo_3 = fecha_3+' '+ hora_3;
+    //console.log(tiempo_3);
 
     //ver si existe el problema
     var query_verificar = connection.query('SELECT id_problema FROM problema WHERE id_problema =?',[id_problema], function(error, result){    
@@ -303,9 +307,22 @@ function deleteRequestProblem(req,res){
   });
 }
 
-
 //idea get multiple por estados para las distintas tablas de admin y solver y de stremanager
 function getProblemas(req,res){
+
+  //calculo de hora y fecha actual
+  var date = new Date();
+  var fecha =date.toISOString().split('T')[0];    
+  var hora = date.toLocaleTimeString('en-US').split(' ')[0];    
+  var datetime = fecha+' '+ hora;
+  //console.log(datetime);
+//prueba de nueva fecha menos 3 meses
+  var dateAtras = new Date();
+  dateAtras.setDate(date.getDate() - 90);    
+  var fecha_3 =dateAtras.toISOString().split('T')[0];    
+  var hora_3 = dateAtras.toLocaleTimeString('en-US').split(' ')[0];    
+  var tiempo_3 = fecha_3+' '+ hora_3;
+  //console.log(tiempo_3);
 
   var query_drop_temporal = connection.query('DROP TABLE IF EXISTS problema_usuario_designado', [], function(error, result){
     if(error){
@@ -324,7 +341,7 @@ function getProblemas(req,res){
               // throw error;
               res.status(200).send({Mensaje:'Error al Cargar datos a la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
             }else{              
-              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado, problema.total FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema order by problema.fecha_solicitud', [], function(error, result){
+              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado, problema.total FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema WHERE problema.fecha_solicitud > ? ORDER BY problema.fecha_solicitud', [tiempo_3], function(error, result){
                 if(error){
                   // throw error;
                   res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
@@ -353,6 +370,19 @@ function getProblemas(req,res){
 
 function getProblema(req,res){
   var id_problema = req.params.id_problema;
+  //calculo de hora y fecha actual
+  var date = new Date();
+  var fecha =date.toISOString().split('T')[0];    
+  var hora = date.toLocaleTimeString('en-US').split(' ')[0];    
+  var datetime = fecha+' '+ hora;
+  //console.log(datetime);
+//prueba de nueva fecha menos 3 meses
+  var dateAtras = new Date();
+  dateAtras.setDate(date.getDate() - 90);    
+  var fecha_3 =dateAtras.toISOString().split('T')[0];    
+  var hora_3 = dateAtras.toLocaleTimeString('en-US').split(' ')[0];    
+  var tiempo_3 = fecha_3+' '+ hora_3;
+  //console.log(tiempo_3);
   var query_drop_temporal = connection.query('DROP TABLE IF EXISTS problema_usuario_designado', [], function(error, result){
     if(error){
       // throw error;
@@ -369,9 +399,8 @@ function getProblema(req,res){
             if(error){
               // throw error;
               res.status(200).send({Mensaje:'Error al Cargar datos a la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
-            }else{              
-              
-              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema WHERE problema.id_problema=?', [id_problema], function(error, result){
+            }else{                            
+              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema WHERE problema.fecha_solicitud > ? AND problema.id_problema=?', [tiempo_3,id_problema], function(error, result){
                 if(error){
                   // throw error;
                   res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
@@ -395,8 +424,21 @@ function getProblema(req,res){
   });  
 }
 
+//funcion de problemas por orden de fecha de solicitud
 function getProblemasOrder(req,res){
-
+  //calculo de hora y fecha actual
+  var date = new Date();
+  var fecha =date.toISOString().split('T')[0];    
+  var hora = date.toLocaleTimeString('en-US').split(' ')[0];    
+  var datetime = fecha+' '+ hora;
+  //console.log(datetime);
+//prueba de nueva fecha menos 3 meses
+  var dateAtras = new Date();
+  dateAtras.setDate(date.getDate() - 90);    
+  var fecha_3 =dateAtras.toISOString().split('T')[0];    
+  var hora_3 = dateAtras.toLocaleTimeString('en-US').split(' ')[0];    
+  var tiempo_3 = fecha_3+' '+ hora_3;
+  //console.log(tiempo_3);
   var query_drop_temporal = connection.query('DROP TABLE IF EXISTS problema_usuario_designado', [], function(error, result){
     if(error){
       // throw error;
@@ -414,7 +456,7 @@ function getProblemasOrder(req,res){
               // throw error;
               res.status(200).send({Mensaje:'Error al Cargar datos a la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
             }else{              
-              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado, problema.total FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema order by problema.fecha_solicitud', [], function(error, result){
+              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado, problema.total FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema WHERE problema.fecha_solicitud > ?  ORDER BY problema.fecha_solicitud', [tiempo_3], function(error, result){
                 if(error){
                   // throw error;
                   res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
@@ -440,7 +482,86 @@ function getProblemasOrder(req,res){
 }
 
 
+//problemas por sucursal ordenadors por fecha de solicitud
+//funcion de problemas por orden de fecha de solicitud
+function getProblemasSucursalOrder(req,res){
+  var id_sucursal = req.params.id_sucursal;
+  //calculo de hora y fecha actual
+  var date = new Date();
+  var fecha =date.toISOString().split('T')[0];    
+  var hora = date.toLocaleTimeString('en-US').split(' ')[0];    
+  var datetime = fecha+' '+ hora;
+  //console.log(datetime);
+//prueba de nueva fecha menos 3 meses
+  var dateAtras = new Date();
+  dateAtras.setDate(date.getDate() - 90);    
+  var fecha_3 =dateAtras.toISOString().split('T')[0];    
+  var hora_3 = dateAtras.toLocaleTimeString('en-US').split(' ')[0];    
+  var tiempo_3 = fecha_3+' '+ hora_3;
+  //console.log(tiempo_3);
+  var query_drop_temporal = connection.query('DROP TABLE IF EXISTS problema_usuario_designado', [], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error al eliminar la tabla Usuario Designado Por Problema ',Estatus:'Error'});
+    }else{
 
+      var query_temporal = connection.query('CREATE TEMPORARY TABLE IF NOT EXISTS problema_usuario_designado (id_problema int, id_usuario_designado int NULL DEFAULT NULL, id_empleado int NULL DEFAULT NULL, nombre_empleado_designado varchar(150) NULL DEFAULT NULL)', [], function(error, result){
+        if(error){
+          // throw error;
+          res.status(200).send({Mensaje:'Error al eliminar Crear la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
+        }else{
+
+          var query_upload_data = connection.query('INSERT INTO problema_usuario_designado (id_problema, id_usuario_designado,id_empleado, nombre_empleado_designado) SELECT id_problema, id_usuario_designado,(SELECT id_empleado  FROM usuario AS us WHERE (us.id_usuario = problem.id_usuario_designado)) AS infouser,  (SELECT nombre_empleado FROM  empleado AS resp WHERE (infouser = resp.id_empleado)) AS respon FROM problema AS problem', [], function(error, result){
+            if(error){
+              // throw error;
+              res.status(200).send({Mensaje:'Error al Cargar datos a la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
+            }else{              
+              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado, problema.total FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema WHERE problema.fecha_solicitud > ? AND  sucursal.id_sucursal = ?', [tiempo_3,id_sucursal], function(error, result){
+                if(error){
+                  // throw error;
+                  res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+                }else{
+            
+                  var problemas = result;
+                  //console.log(problemas);
+                  if(problemas.length != 0){
+                    res.status(200).json(problemas);   
+                  }
+                  else{
+                    res.status(200).send({Mensaje:'Error. No hay problemas.',Estatus:'Error'});
+                  }
+                }
+              });
+            }
+          });
+        }
+      });      
+    }
+  });  
+}
+
+//suma de gasto de sucursal en mantenimiento por problemas terminados
+function getGastoTotalSucursal(req,res){
+  var id_sucursal = req.params.id_sucursal;
+  //problema.estatus = "TERMINADO" AND
+  var query = connection.query('SELECT SUM(problema.total) AS gasto_total  FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema where  sucursal.id_sucursal = 2;', [id_sucursal], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición', Estatus:'Error'});
+    }else{
+
+      var GastoSucursal = result;
+            
+      if(GastoSucursal.length != 0){
+        //res.json(rows);
+        res.status(200).json(GastoSucursal);   
+      }
+      else{
+        res.status(200).send({Mensaje:'Error. La sucursal no existe.', Estatus:'Error'});
+      }
+    }
+  });
+}
 
 
 
@@ -451,5 +572,7 @@ module.exports={
     getProblema,
     ProblemaEstatus,    
     getProblemasOrder,
-    deleteRequestProblem
+    deleteRequestProblem,
+    getProblemasSucursalOrder,
+    getGastoTotalSucursal
 };

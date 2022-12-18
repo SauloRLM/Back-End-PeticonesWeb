@@ -101,6 +101,7 @@ function getTiposProblemas(req,res){
 }
 
 
+
 function getTipoProblema(req,res){
   var id_tipo_problema = req.params.id_tipo_problema;
 

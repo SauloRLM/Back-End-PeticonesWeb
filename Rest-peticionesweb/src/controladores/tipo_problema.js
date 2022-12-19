@@ -26,13 +26,27 @@ function guardarTipoProblema(req,res){
         if(resultado_verificacion.length == 0){
 
             var query = connection.query('INSERT INTO tipo_problema(tipo_problema, descripcion_tipo_problema, estatus) VALUES(?,?,?)',
-                            [params.tipo_problema, params.descripcion_tipo_problema, params.estatus],function(error, result){
-                                if(error){
-                                // throw error;
-                                    res.status(200).send({Mensaje:'Error Al registrar al Tipo de Problema',Estatus:'Error'});
-                                }else{
-                                    res.status(200).send({Mensaje:'Tipo de Problema registrado con exito',Estatus:'Ok'});
-                                }
+            [params.tipo_problema, params.descripcion_tipo_problema, params.estatus],function(error, result){
+              if(error){                            
+                res.status(200).send({Mensaje:'Error Al registrar al Tipo de Problema',Estatus:'Error'});
+              }else{
+                var query = connection.query('SELECT id_tipo_problema FROM tipo_problema WHERE tipo_problema = ?',
+                [params.tipo_problema],function(error, result){
+                  if(error){
+                    res.status(200).send({Mensaje:'Error. Al obtener id tipo de problema.',Estatus:'Error'});
+                  }else{
+                    var idtipoproblema =result[0].id_tipo_problema;
+                    var query = connection.query('INSERT INTO articulo_problema(id_codigo_articulo,id_tipo_problema ) VALUES(?,?)',
+                    ['5000000000', idtipoproblema],function(error, result){
+                      if(error){
+                        res.status(200).send({Mensaje:'Error. Al registrar la articulo al tipo de problema.',Estatus:'Error'});
+                      }else{
+                        res.status(200).send({Mensaje:'Tipo de Problema registrado con exito',Estatus:'Ok'});
+                      }
+                    });                  
+                  }
+                });
+              }
             });             
         }else{
           res.status(200).send({Mensaje:'Error. Tipo de problema ya registrado en el sistema',Estatus:'Error'});
@@ -100,6 +114,25 @@ function getTiposProblemas(req,res){
   });
 }
 
+//problemas Activos
+function getTiposProblemasAct(req,res){
+  var query = connection.query('SELECT * FROM tipo_problema WHERE estatus = "A"', [], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+    }else{
+
+      var tipos_problemas = result;
+            
+      if(tipos_problemas.length != 0){
+        res.status(200).json(tipos_problemas);   
+      }
+      else{
+        res.status(200).send({Mensaje:'Error. No hay tipo de problema activo',Estatus:'Error'});
+      }
+    }
+  });
+}
 
 
 function getTipoProblema(req,res){
@@ -156,4 +189,5 @@ module.exports={
     getTiposProblemas,
     getTipoProblema,
     eliminarTipoProblema,    
+    getTiposProblemasAct
 };

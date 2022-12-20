@@ -11,11 +11,14 @@ connection.connect(function(error){
 function guardarAlmacen(req,res){
   //Recoger parametros peticion
   var params = req.body;
-  if(params.id_sucursal && params.id_codigo_articulo  && params.cantidad_total && params.cantidad_disponible && params.tipo && connection){
+  
+  //console.log(params);
+  //nota si cantidad disponible llega como cero no se puede saber si existe
+          
+  if(params.id_sucursal && params.id_codigo_articulo  && params.cantidad_total && params.tipo && connection){
 
     //Verrificar si existe ese registro en el almacen 
-    var query_verificar = connection.query('SELECT id_codigo_articulo FROM almacen WHERE id_codigo_articulo = ? AND id_sucursal = ?',[params.id_codigo_articulo, params.id_sucursal], function(error, result){
-    
+    var query_verificar = connection.query('SELECT id_codigo_articulo FROM almacen WHERE id_codigo_articulo = ? AND id_sucursal = ?',[params.id_codigo_articulo, params.id_sucursal], function(error, result){    
         if(error){
           //throw error;
           res.status(200).send({Mensaje:'Error al verificar existencia',Estatus:'Error'});
@@ -140,7 +143,7 @@ function getAlmacenes(req,res){
 //hacer inner join con sucursal y con producto 
 function getAlmacenesTypeProblem(req,res){
   var id_tipo_problema = req.params.id_tipo_problema;
-  var query = connection.query('SELECT almacen.id_almacen, almacen.id_sucursal ,sucursal.nombre_sucursal, almacen.id_codigo_articulo, codigo_articulo.nombre_articulo, cantidad_total, cantidad_disponible, tipo FROM almacen INNER JOIN sucursal on sucursal.id_sucursal = almacen.id_sucursal INNER JOIN codigo_articulo on codigo_articulo.id_codigo_articulo  = almacen.id_codigo_articulo INNER JOIN articulo_problema ON articulo_problema.id_codigo_articulo = almacen.id_codigo_articulo WHERE almacen.id_sucursal = 16  AND articulo_problema.id_tipo_problema = ?', [id_tipo_problema], function(error, result){
+  var query = connection.query('SELECT almacen.id_almacen, almacen.id_sucursal ,sucursal.nombre_sucursal, almacen.id_codigo_articulo, codigo_articulo.nombre_articulo, cantidad_total, cantidad_disponible, tipo FROM almacen INNER JOIN sucursal on sucursal.id_sucursal = almacen.id_sucursal INNER JOIN codigo_articulo on codigo_articulo.id_codigo_articulo  = almacen.id_codigo_articulo INNER JOIN articulo_problema ON articulo_problema.id_codigo_articulo = almacen.id_codigo_articulo WHERE almacen.id_sucursal = 16 AND almacen.cantidad_disponible > ? AND articulo_problema.id_tipo_problema = ?', [0,id_tipo_problema], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});

@@ -126,126 +126,129 @@ function ProblemaEstatus(req,res){
       
           }else if(params.estatus == 'PROCESO'){            
             var banderaError = 'a'
-            
-                //materiales va a estar compuesto por dos campos cantidad a restar y el codigo del articulo 
-                var totalPrecioRequisitos = 0 ;                
-                params.requeriment.forEach(element => {              
-                  var codigo = element.id_codigo_articulo;
-                  var cantidad = element.cantidad;                                    
-                  var precio = element.precio;                       
-                  
-                  //console.log(element);
-                  
-                  if(codigo == '5000000000'){ //cambiar en base a cual es otros en el codigo
-                    totalPrecioRequisitos = totalPrecioRequisitos + precio;                    
+            var totalPrecioRequisitos = 0 ;                
+
+            //console.log(params);
+
+            if(params.requeriment){
+              //materiales va a estar compuesto por dos campos cantidad a restar y el codigo del articulo                 
+              params.requeriment.forEach(element => {              
+                var codigo = element.id_codigo_articulo;
+                var cantidad = element.cantidad;                                    
+                var precio = element.precio;                       
+                
+                //console.log(element);
+                
+                if(codigo == '5000000000'){ //cambiar en base a cual es otros en el codigo
+                  totalPrecioRequisitos = totalPrecioRequisitos + precio;                    
+                }else{
+                  totalPrecioRequisitos = totalPrecioRequisitos + precio;
+                  var query_exist_almacen = connection.query('SELECT * from almacen  where id_sucursal = ? and id_codigo_articulo = ?',
+                  [params.id_sucursal,codigo],function(error, result){
+                  if(error){
+                    //throw error;
+                    banderaError = 'b';
                   }else{
-                    totalPrecioRequisitos = totalPrecioRequisitos + precio;
-                    var query_exist_almacen = connection.query('SELECT * from almacen  where id_sucursal = ? and id_codigo_articulo = ?',
-                    [params.id_sucursal,codigo],function(error, result){
-                    if(error){
-                      //throw error;
-                      banderaError = 'b';
-                    }else{
-                      var resultado_verificacion = result;  
-                      if(resultado_verificacion.length != 0){                                                
-                        
-                        var query_almacen = connection.query('SELECT cantidad_disponible from almacen WHERE id_sucursal = 16 and id_codigo_articulo = ?;',
-                        [ codigo ],function(error, result){
-                          if(error){
-                            //throw error;
-                            banderaError = 'b';
-                          }else{                                                        
-                            var cantidadAlmacen = 0;
-                            cantidadAlmacen = result[0].cantidad_disponible;
-                            cantidadAlmacen = cantidadAlmacen - cantidad;                            
-                                                                                                                
-                                var resultado_verificacion_update = result;                                  
-                                if(resultado_verificacion_update.length > 0){
-                                  //se procede a reinsetar el almacen modificado
-                                  var query_almacen = connection.query('UPDATE almacen SET cantidad_disponible = ? WHERE id_sucursal = 16 and id_codigo_articulo = ?;',
-                                  [ cantidadAlmacen,codigo ],function(error, result){
-                                    if(error){
-                                      //throw error;
-                                      banderaError = 'b';
-                                    }else{                                                 
-                                      //se procede a modificar el almacen receptor
-                                      var query_almacen = connection.query('SELECT cantidad_total from almacen WHERE id_sucursal = ? and id_codigo_articulo = ?;',
-                                      [params.id_sucursal,codigo ],function(error, result){
-                                        if(error){
-                                          //throw error;
-                                          banderaError = 'b';
-                                        }else{
-                                          var cantidadAlmacenRecip = result[0].cantidad_total;
-                                          cantidadAlmacenRecip = cantidadAlmacenRecip + cantidad;                                          
-                                          //se procede a a
-                                          var query = connection.query('UPDATE almacen SET cantidad_total = ? WHERE id_sucursal = ? AND id_codigo_articulo = ?',
-                                          [ cantidadAlmacenRecip,params.id_sucursal, codigo],function(error, result){
-                                            if(error){
-                                              banderaError = 'b';
-                                            }
-                                          })
-                                        }
-                                      })
-                                    }
-                                  });
-                                }                               
-                              }
-                            })                                                                                                                                         
-                      }else{
-                        var query_almacen = connection.query('SELECT cantidad_disponible,tipo from almacen WHERE id_sucursal = 16 and id_codigo_articulo = ?;',
-                        [ codigo ],function(error, result){
-                          if(error){
-                            //throw error;
-                            banderaError = 'b';
-                          }else{                                                        
-                            var cantidadAlmacen = 0;
-                            cantidadAlmacen = result[0].cantidad_disponible;
-                            cantidadAlmacen = cantidadAlmacen - cantidad;                     
-                            //console.log(cantidadAlmacen);
-                            var tipo = result[0].tipo;                                                                                                                
-                                var resultado_verificacion_update = result;                                  
-                                if(resultado_verificacion_update.length > 0){
-                                  //se procede a reinsetar el almacen modificado
-                                  var query_almacen = connection.query('UPDATE almacen SET cantidad_disponible = ? WHERE id_sucursal = 16 and id_codigo_articulo = ?;',
-                                  [ cantidadAlmacen,codigo ],function(error, result){
-                                    if(error){
-                                      //throw error;
-                                      banderaError = 'b';
-                                    }else{                                                 
-                                      //para generarlo
-                                        var cantTotal = 0;
-                                        //console.log(cantidad);
-                                        var query = connection.query('INSERT INTO almacen(id_sucursal, id_codigo_articulo, cantidad_total, cantidad_disponible, tipo) VALUES(?,?,?,?,?)',
-                                        [params.id_sucursal, codigo, cantidad, cantTotal,tipo],function(error, result){
+                    var resultado_verificacion = result;  
+                    if(resultado_verificacion.length != 0){                                                
+                      
+                      var query_almacen = connection.query('SELECT cantidad_disponible from almacen WHERE id_sucursal = 16 and id_codigo_articulo = ?;',
+                      [ codigo ],function(error, result){
+                        if(error){
+                          //throw error;
+                          banderaError = 'b';
+                        }else{                                                        
+                          var cantidadAlmacen = 0;
+                          cantidadAlmacen = result[0].cantidad_disponible;
+                          cantidadAlmacen = cantidadAlmacen - cantidad;                            
+                                                                                                              
+                              var resultado_verificacion_update = result;                                  
+                              if(resultado_verificacion_update.length > 0){
+                                //se procede a reinsetar el almacen modificado
+                                var query_almacen = connection.query('UPDATE almacen SET cantidad_disponible = ? WHERE id_sucursal = 16 and id_codigo_articulo = ?;',
+                                [ cantidadAlmacen,codigo ],function(error, result){
+                                  if(error){
+                                    //throw error;
+                                    banderaError = 'b';
+                                  }else{                                                 
+                                    //se procede a modificar el almacen receptor
+                                    var query_almacen = connection.query('SELECT cantidad_total from almacen WHERE id_sucursal = ? and id_codigo_articulo = ?;',
+                                    [params.id_sucursal,codigo ],function(error, result){
+                                      if(error){
+                                        //throw error;
+                                        banderaError = 'b';
+                                      }else{
+                                        var cantidadAlmacenRecip = result[0].cantidad_total;
+                                        cantidadAlmacenRecip = cantidadAlmacenRecip + cantidad;                                          
+                                        //se procede a a
+                                        var query = connection.query('UPDATE almacen SET cantidad_total = ? WHERE id_sucursal = ? AND id_codigo_articulo = ?',
+                                        [ cantidadAlmacenRecip,params.id_sucursal, codigo],function(error, result){
                                           if(error){
-                                          // throw error;
                                             banderaError = 'b';
                                           }
-                                        });                                                                                
-                                    }
-                                  });
-                                }                               
-                              }
-                            })                                                                                                                                                                                                                                                                                               
-                      }
-                    }
-                  });                     
-                  }                                                  
-                });   
-                
-                           
-                if(banderaError == 'b'){
-                  res.status(200).send({Mensaje:'Error al asignar materiales al problema',Estatus:'Error'});
-                }else{                  
-                  var query = connection.query('UPDATE problema SET total=?, estatus= ?, fecha_enproceso= ? WHERE id_problema = ?',
-                  [ totalPrecioRequisitos,params.estatus,datetime,id_problema],function(error, result){
-                    if(error){
-                      res.status(200).send({Mensaje:'Error al modificar estatus del problema',Estatus:'Ok'});                                
+                                        })
+                                      }
+                                    })
+                                  }
+                                });
+                              }                               
+                            }
+                          })                                                                                                                                         
                     }else{
-                      res.status(200).send({Mensaje:'Materiales agregados con exito al problema',Estatus:'Ok'});                                
+                      var query_almacen = connection.query('SELECT cantidad_disponible,tipo from almacen WHERE id_sucursal = 16 and id_codigo_articulo = ?;',
+                      [ codigo ],function(error, result){
+                        if(error){
+                          //throw error;
+                          banderaError = 'b';
+                        }else{                                                        
+                          var cantidadAlmacen = 0;
+                          cantidadAlmacen = result[0].cantidad_disponible;
+                          cantidadAlmacen = cantidadAlmacen - cantidad;                     
+                          //console.log(cantidadAlmacen);
+                          var tipo = result[0].tipo;                                                                                                                
+                              var resultado_verificacion_update = result;                                  
+                              if(resultado_verificacion_update.length > 0){
+                                //se procede a reinsetar el almacen modificado
+                                var query_almacen = connection.query('UPDATE almacen SET cantidad_disponible = ? WHERE id_sucursal = 16 and id_codigo_articulo = ?;',
+                                [ cantidadAlmacen,codigo ],function(error, result){
+                                  if(error){
+                                    //throw error;
+                                    banderaError = 'b';
+                                  }else{                                                 
+                                    //para generarlo
+                                      var cantTotal = 0;
+                                      //console.log(cantidad);
+                                      var query = connection.query('INSERT INTO almacen(id_sucursal, id_codigo_articulo, cantidad_total, cantidad_disponible, tipo) VALUES(?,?,?,?,?)',
+                                      [params.id_sucursal, codigo, cantidad, cantTotal,tipo],function(error, result){
+                                        if(error){
+                                        // throw error;
+                                          banderaError = 'b';
+                                        }
+                                      });                                                                                
+                                  }
+                                });
+                              }                               
+                            }
+                          })                                                                                                                                                                                                                                                                                               
                     }
-                  });                                                                                              
-                }                          
+                  }
+                });                     
+                }                                                  
+              });   
+            }                                                           
+          
+            if(banderaError == 'b'){
+              res.status(200).send({Mensaje:'Error al asignar materiales al problema',Estatus:'Error'});
+            }else{                  
+              var query = connection.query('UPDATE problema SET total=?, estatus= ?, fecha_enproceso= ? WHERE id_problema = ?',
+              [ totalPrecioRequisitos,params.estatus,datetime,id_problema],function(error, result){
+                if(error){
+                  res.status(200).send({Mensaje:'Error al modificar estatus del problema',Estatus:'Ok'});                                
+                }else{
+                  res.status(200).send({Mensaje:'Materiales agregados con exito al problema',Estatus:'Ok'});                                
+                }
+              });                                                                                              
+            }                          
 
           }else if(params.estatus == 'TERMINADO'){
 

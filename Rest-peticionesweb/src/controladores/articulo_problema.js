@@ -9,8 +9,7 @@ connection.connect(function(error){
 //acciones
 function guardarArticuloProblema(req,res){
   //Recoger parametros peticion
-  var params = req.body;
-
+  var params = req.body;  
   if(params.id_codigo_articulo && params.id_tipo_problema && connection){
 
     //Verificar si existe ya el registro 
@@ -47,7 +46,9 @@ function modificarArticuloProblema(req,res){
   var id_articulo_problema = req.params.id_articulo_problema;
   var params = req.body;
 
-  if(params.id_articulo && params.id_tipo_problema && connection){
+  //console.log(params);
+
+  if(params.id_codigo_articulo && params.id_tipo_problema && connection){
     //verificar si existe para poder modificar
     var query_verificar = connection.query('SELECT id_articulo_problema FROM articulo_problema WHERE id_articulo_problema =?',[id_articulo_problema], function(error, result){
       if(error){

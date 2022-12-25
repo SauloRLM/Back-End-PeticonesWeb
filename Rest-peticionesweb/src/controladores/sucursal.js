@@ -19,14 +19,11 @@ function guardarSucursal(req,res){
           //throw error;
           res.status(200).send({Mensaje:'Error al verificar existencia', Estatus:'Error'});
        }else{
-        var resultado_verificacion = result;
-        //Registrar Empleado//
+        var resultado_verificacion = result;        
         if(resultado_verificacion.length == 0){
-
           var query = connection.query('INSERT INTO sucursal(id_sucursal, nombre_sucursal, domicilio, correo, telefono, estatus) VALUES(?,?,?,?,?,?)',
           [params.id_sucursal, params.nombre_sucursal, params.domicilio, params.correo, params.telefono, params.estatus],function(error, result){
-           if(error){
-              // throw error;
+           if(error){        
               res.status(200).send({Mensaje:'Error al registrar la sucursal', Estatus:'Error'});
            }else{
               res.status(200).send({Mensaje:'sucursal registrada con exito', Estatus:'Ok'});
@@ -65,6 +62,14 @@ function modificarSucursal(req,res){
               //throw error;
               res.status(200).send({Mensaje:'Error al modificar Sucursal', Estatus:'Error'});
             }else{
+
+              //desabilitar usuario aosciado a dicha sucursal o habilitar en caso de habilitar
+
+
+              //obtener los datos de almacen y cargarlos a la 16 como disponibles, por ultimo borrarlos de almacen.
+
+
+
               res.status(200).send({Mensaje:'Sucursal modificada con exito', Estatus:'Ok'});
             }
           });

@@ -97,7 +97,16 @@ function modificarEmpleado(req,res){
                     //throw error;
                       res.status(200).send({Mensaje:'Error al modificar Empleado',Estatus:'Error'});
                     }else{
-                    res.status(200).send({Mensaje:'Empleado modificado con exito',Estatus:'Ok'});
+
+                      var query = connection.query('UPDATE usuario JOIN empleado ON empleado.id_empleado = usuario.id_empleado SET usuario.estatus = ? WHERE empleado.estatus = ?;',
+                      [params.estatus,params.estatus],function(error, result){
+                        if(error){
+                        //throw error;
+                          res.status(200).send({Mensaje:'Error al modificar Empleado',Estatus:'Error'});
+                        }else{
+                        res.status(200).send({Mensaje:'Empleado modificado con exito',Estatus:'Ok'});
+                        }
+                      });                    
                     }
                   });
           

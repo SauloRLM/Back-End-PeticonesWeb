@@ -65,7 +65,7 @@ function modificarSucursal(req,res){
               //throw error;
               res.status(200).send({Mensaje:'Error al modificar Sucursal', Estatus:'Error'});
             }else{
-              res.status(200).send({Mensaje:'Sucursal modificada con exito', Estatus:'Ok'});
+              res.status(200).send({Mensaje:'Sucursal modificada con exito', Estatus:'Ok'});                  
             }
           });
         }

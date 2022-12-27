@@ -97,7 +97,16 @@ function modificarEmpleado(req,res){
                     //throw error;
                       res.status(200).send({Mensaje:'Error al modificar Empleado',Estatus:'Error'});
                     }else{
-                    res.status(200).send({Mensaje:'Empleado modificado con exito',Estatus:'Ok'});
+
+                      var query = connection.query('UPDATE usuario JOIN empleado ON empleado.id_empleado = usuario.id_empleado SET usuario.estatus = ? WHERE empleado.estatus = ?;',
+                      [params.estatus,params.estatus],function(error, result){
+                        if(error){
+                        //throw error;
+                          res.status(200).send({Mensaje:'Error al modificar Empleado',Estatus:'Error'});
+                        }else{
+                        res.status(200).send({Mensaje:'Empleado modificado con exito',Estatus:'Ok'});
+                        }
+                      });                    
                     }
                   });
           
@@ -121,6 +130,25 @@ function modificarEmpleado(req,res){
 
 function getEmpleados(req,res){
   var query = connection.query('SELECT * FROM empleado', [], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+    }else{
+
+      var sucursales = result;
+            
+      if(sucursales.length != 0){
+        res.status(200).json(sucursales);   
+      }
+      else{
+        res.status(200).send({Mensaje:'Error. No hay empleados.',Estatus:'Error'});
+      }
+    }
+  });
+}
+
+function getEmpleadosAct(req,res){
+  var query = connection.query('SELECT * FROM empleado WHERE estatus = ?', ["A"], function(error, result){
     if(error){
       // throw error;
       res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
@@ -190,6 +218,7 @@ module.exports={
     guardarEmpleado,
     modificarEmpleado,
     getEmpleados,
+    getEmpleadosAct,
     getEmpleado,
     eliminarEmpleado,    
 };

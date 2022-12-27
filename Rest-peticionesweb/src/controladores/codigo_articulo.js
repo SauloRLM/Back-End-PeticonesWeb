@@ -96,6 +96,24 @@ function getCodigosArticulos(req,res){
   });
 }
 
+function getCodigosArticulosSinOtros(req,res){
+  var query = connection.query('SELECT * FROM codigo_articulo WHERE id_codigo_articulo != ?', ["5000000000"], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
+    }else{
+
+      var codigos_articulos = result;
+            
+      if(codigos_articulos.length != 0){
+        res.status(200).json(codigos_articulos);   
+      }
+      else{
+        res.status(200).send({Mensaje:'Error. No hay codigos de articulos.',Estatus:'Error'});
+      }
+    }
+  });
+}
 
 function getCodigoArticulo(req,res){
   var id_codigo_articulo = req.params.id_codigo_articulo;
@@ -123,5 +141,6 @@ module.exports={
     guardarCodigoArticulo,
     modificarCodigoArticulo,
     getCodigosArticulos,
+    getCodigosArticulosSinOtros,
     getCodigoArticulo,
 };

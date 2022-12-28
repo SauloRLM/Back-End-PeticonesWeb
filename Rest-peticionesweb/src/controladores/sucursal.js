@@ -62,15 +62,33 @@ function modificarSucursal(req,res){
               //throw error;
               res.status(200).send({Mensaje:'Error al modificar Sucursal', Estatus:'Error'});
             }else{
+              //deshabilitar empleado aosciado a dicha sucursal o habilitar en caso de habilitar
+              var query = connection.query('UPDATE empleado JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal SET empleado.estatus = ? WHERE sucursal.estatus = ?;',
+              [params.estatus,params.estatus],function(error, result){
+                if(error){
+                //throw error;
+                  res.status(200).send({Mensaje:'Error al modificar Empleado',Estatus:'Error'});
+                }else{                
+                  //deshabilitar usuario asosiado con el empleado
+                  var query = connection.query('UPDATE usuario JOIN empleado ON empleado.id_empleado = usuario.id_empleado SET usuario.estatus = ? WHERE empleado.estatus = ?;',
+                  [params.estatus,params.estatus],function(error, result){
+                    if(error){
+                    //throw error;
+                      res.status(200).send({Mensaje:'Error al modificar Empleado',Estatus:'Error'});
+                    }else{                      
+                      if(params.estatus == 'B'){
+                        res.status(200).send({Mensaje:'Sucursal modificada con exito', Estatus:'Ok'});                  
+                        //obtener los datos de almacen y cargarlos a la 1 como disponibles, por ultimo borrarlos de almacen.
 
-              //desabilitar usuario aosciado a dicha sucursal o habilitar en caso de habilitar
 
 
-              //obtener los datos de almacen y cargarlos a la 16 como disponibles, por ultimo borrarlos de almacen.
-
-
-
-              res.status(200).send({Mensaje:'Sucursal modificada con exito', Estatus:'Ok'});
+                      }else{                        
+                        res.status(200).send({Mensaje:'Sucursal modificada con exito', Estatus:'Ok'});
+                      }                      
+                    }
+                  });       
+                }  
+              });                     
             }
           });
         }

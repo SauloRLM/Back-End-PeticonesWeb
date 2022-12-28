@@ -9,6 +9,7 @@ api.post('/registrar-sucursal',SucursalControlador.guardarSucursal);
 api.put('/modificar-sucursal/:id_sucursal',SucursalControlador.modificarSucursal);
 api.get('/sucursales',SucursalControlador.getSucursales);
 api.get('/sucursalesAct',SucursalControlador.getSucursalesAct);
+api.get('/sucursales-SinAlmacen',SucursalControlador.getSucursalesSinAlmacen);
 api.get('/sucursal/:id_sucursal',SucursalControlador.getSucursal);
 api.delete('/eliminar-sucursal/:id_sucursal' ,SucursalControlador.eliminarSucursal);
 

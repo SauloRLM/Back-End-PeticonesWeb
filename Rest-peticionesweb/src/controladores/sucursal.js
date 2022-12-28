@@ -123,6 +123,23 @@ function getSucursales(req,res){
   });
 }
 
+function getSucursalesSinAlmacen(req,res){
+  var query = connection.query('SELECT * FROM sucursal WHERE id_sucursal != ?', [1], function(error, result){
+    if(error){
+      // throw error;
+      res.status(200).send({Mensaje:'Error en la petición', Estatus:'Error'});
+    }else{
+      var sucursales = result;            
+      if(sucursales.length != 0){
+        res.status(200).json(sucursales);   
+      }
+      else{
+        res.status(200).send({Mensaje:'Error.No hay sucursales', Estatus:'Error'});
+      }
+    }
+  });
+}
+
 function getSucursalesAct(req,res){
   var query = connection.query('SELECT * FROM sucursal WHERE estatus = ?', ["A"], function(error, result){
     if(error){
@@ -194,6 +211,7 @@ module.exports={
     modificarSucursal,
     getSucursales,
     getSucursalesAct,
+    getSucursalesSinAlmacen,
     getSucursal,
     eliminarSucursal,    
 };

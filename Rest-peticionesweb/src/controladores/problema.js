@@ -484,9 +484,7 @@ function getProblemasSucursalOrder(req,res){
   var DateIni = req.params.FecIni;
   var DateEnd = req.params.FecFin;
   
-    console.log(req.params.id_sucursal);
-    console.log(req.params.FecIni);
-    console.log(req.params.FecFin);
+  
 
   var query_drop_temporal = connection.query('DROP TABLE IF EXISTS problema_usuario_designado', [], function(error, result){
     if(error){
@@ -516,7 +514,7 @@ function getProblemasSucursalOrder(req,res){
                     res.status(200).json(problemas);   
                   }
                   else{
-                    res.status(200).send({Mensaje:'Error. No hay problemas.',Estatus:'Error'});
+                    res.status(200).send({Mensaje:'No hay problemas que mostrar para este reporte.',Estatus:'Alerta'});
                   }
                 }
               });
@@ -535,10 +533,6 @@ function getProblemasUserDegOrder(req,res){
   var DateIni = req.params.FecIni;
   var DateEnd = req.params.FecFin;
   
-    console.log(req.params.id_sucursal);
-    console.log(req.params.FecIni);
-    console.log(req.params.FecFin);
-
   var query_drop_temporal = connection.query('DROP TABLE IF EXISTS problema_usuario_designado', [], function(error, result){
     if(error){
       // throw error;
@@ -555,7 +549,7 @@ function getProblemasUserDegOrder(req,res){
               // throw error;
               res.status(200).send({Mensaje:'Error al Cargar datos a la tabla Temporal Usuario Designado Por Problema ',Estatus:'Error'});
             }else{              
-              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado,problema.prioridad, problema.total FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema WHERE problema.fecha_solicitud >= ? AND problema.fecha_solicitud <= ?  AND  problema.id_usuario_designado = ?', [DateIni,DateEnd,id_user], function(error, result){
+              var query = connection.query('SELECT problema.id_problema, problema.id_tipo_problema,tipo_problema.tipo_problema, problema.descripcion_problema, problema.id_usuario, empleado.nombre_empleado, sucursal.id_sucursal, sucursal.nombre_sucursal,problema.id_usuario_designado, problema_usuario_designado.nombre_empleado_designado, problema.estatus, DATE_FORMAT(fecha_solicitud, "%Y-%m-%d %T") as fecha_solicitud, DATE_FORMAT(fecha_aceptado, "%Y-%m-%d %T") as fecha_aceptado,  DATE_FORMAT(fecha_revision, "%Y-%m-%d %T") as fecha_revision, DATE_FORMAT(fecha_enproceso, "%Y-%m-%d %T") as fecha_enproceso, DATE_FORMAT(fecha_terminado, "%Y-%m-%d %T") as fecha_terminado, DATE_FORMAT(fecha_rechazado, "%Y-%m-%d %T") as fecha_rechazado,problema.prioridad, problema.total, DATEDIFF(fecha_terminado, fecha_aceptado) AS daydiff FROM problema INNER JOIN tipo_problema ON problema.id_tipo_problema = tipo_problema.id_tipo_problema INNER JOIN usuario ON problema.id_usuario = usuario.id_usuario  INNER JOIN empleado ON usuario.id_empleado = empleado.id_empleado INNER JOIN sucursal ON sucursal.id_sucursal = empleado.id_sucursal INNER JOIN  problema_usuario_designado ON problema.id_problema = problema_usuario_designado.id_problema WHERE problema.fecha_solicitud >= ? AND problema.fecha_solicitud <= ?  AND  problema.id_usuario_designado = ?', [DateIni,DateEnd,id_user], function(error, result){
                 if(error){
                   // throw error;
                   res.status(200).send({Mensaje:'Error en la petición',Estatus:'Error'});
